@@ -1,23 +1,23 @@
-import logo from './logo.svg';
-import './App.css';
+import Home from "./home";
+import HomeBackground from "./home_background";
+import Player from './player'
+import { useState,useEffect } from "react";
+
 
 function App() {
+  const [page,setPage] = useState("home");
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="App center">
+      {page==="home" && <section className="home center">
+        <div className="blur-overlay"></div>
+        <HomeBackground/>
+        <Home
+        pageStuff={[page,setPage]}/> 
+      </section>}  {/*  main page */}
+      {page==='player' && <section className="player">
+        <Player/>
+      </section>}
+      
     </div>
   );
 }
