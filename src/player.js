@@ -1,6 +1,6 @@
 const Player = ()=>{
     return(
-        <>
+        <> Player
         </>
     )
 }

@@ -102,6 +102,8 @@ body,#root,.App{
   color: var(--text-color);
 }
 
+/* Responsive design */
+
 /* for the main menu*/
 @media screen and (max-width:977px) {
   .role-choice{width: 100%;}  
@@ -230,6 +232,10 @@ button{cursor: pointer;}
 .click-button:active{
   transition: all 0.08s linear;
   transform: scale(1);
+}
+.redirect-page:any-link{
+  color: var(--text-color);
+  text-decoration: none;
 }
 .blur-overlay{
   position: absolute;

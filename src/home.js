@@ -1,5 +1,5 @@
-const Home = ({pageStuff})=>{
-    const [page,setPage] = pageStuff;
+import {Link} from 'react-router-dom';
+const Home = ()=>{
     return(
         <>  
             <div className="home-container center">
@@ -7,12 +7,16 @@ const Home = ({pageStuff})=>{
                 <div className="role-choice">
                     <button 
                         className="hover-scale click-button"
-                        onClick={()=>setPage('maker')}
-                    >Quiz Maker</button>
+                    ><Link 
+                        className='redirect-page'
+                        to='/QuizMaker'
+                    >Quiz Maker</Link></button>
                     <button 
                         className="hover-scale click-button"
-                        onClick={()=>setPage('player')}
-                    >Player</button>
+                    ><Link 
+                        className='redirect-page'
+                        to='/Player'
+                    >Player</Link></button>
                 </div>
             </div>
         </>
