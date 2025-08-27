@@ -17,6 +17,7 @@
     rgb(253, 223, 255),
     rgb(240, 223, 255)
   );
+  --text-color-dark:#424242;
 }
 body,#root,.App{
   min-height: 100vh;
@@ -24,6 +25,7 @@ body,#root,.App{
 .App{
   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
   width: 100vw;
+  height: 100vh;
 }
 .role-choice{
   display: flex;

@@ -23,17 +23,31 @@ const HomePage = ()=>{
   )
 }
 
+const QuizPage=()=>{
+  return(
+    <motion.div
+      initial={{x:'100%'}}
+      animate={{x:'0%'}}
+      exit={{x:'-100%'}}
+      transition={{ease:'easeOut'}}
+      className="quiz-page"
+    >
+      <QuizMaker/>
+    </motion.div>
+  )
+}
+
 
 function App() {
   const location = useLocation();
   return (
-    <div className="App center">
+    <div className="App">
 
       <AnimatePresence exitBeforeEnter mode="wait" initial={false}>
       <Routes location={location} key={location.pathname}>
         <Route path="/" element={<HomePage />}/>
         <Route path="player" element={<Player/>}/>
-        <Route path="/QuizMaker" element={<QuizMaker/>}/>
+        <Route path="/QuizMaker" element={<QuizPage/>}/>
         <Route path="/*" element={<NotFound/>} />
       </Routes>
       </AnimatePresence>

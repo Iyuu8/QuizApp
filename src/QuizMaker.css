@@ -1,0 +1,105 @@
+:root{
+    --filter-text-color:aliceblue;
+    --qm-bkg:rgb(246, 250, 255);
+    --a:rgb(85, 177, 85);
+}
+.quiz-page{
+    height: 100%;
+    background-color: var(--qm-bkg);
+}
+/*for the header*/
+.qm-header{
+    display: flex;
+    height: 3rem;
+    padding: 0 1rem;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+.qm-fade-wrapper::before,.qm-fade-wrapper::after{
+    content: "";
+    display: block;
+    position: absolute;
+    top: 0;
+    height: 3rem;
+    width: 2rem;
+    background: linear-gradient(var(--direction,to right),var(--qm-bkg),transparent);
+}
+.qm-fade-wrapper::before{
+    --direction:to left;
+    right: 0;
+}
+.qm-fade-wrapper::after{left: 0;}
+.qm-fade-wrapper{
+    flex: 1;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+}
+.qm-filters{
+    height: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+    overflow-y: hidden;
+    padding-left: 0.7rem;
+}
+.qm-filters::-webkit-scrollbar{
+    display: none;
+}
+.qm-filters-list{
+    list-style: none;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--filter-text-color);
+    
+}
+.filter-icon{
+    font-size: 2.7ch;
+    height: 100%;
+    width: 2rem;
+    border-left: 1px solid var(--filter-text-color);
+    cursor: pointer;
+}
+.qm-filter-item{
+    height: 60%;
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    padding-left: 0.5rem;
+    border-radius: 0.9rem;
+    
+}
+.qm-filter-add{
+    width: 10rem;
+    height: 100%;
+}
+
+.qm-filter-add{height: 100%;}
+.qm-btn-filter{
+    height: 80%;
+    display: flex;
+    gap:0.5rem;
+    align-items: center;
+    border: none;
+    background-color:var(--quiz-maker);
+    color: var(--qm-bkg);
+    padding: 0 0.5rem;
+    border-radius: 0.5rem;
+    position: relative;
+}
+.qm-btn-icon{
+    font-size: 2.9ch;
+}
+.qm-scroll-left,.qm-scroll-right{
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    border: none;
+    background-color: transparent;
+    font-size: 4ch;
+    color: var(--text-color);
+    z-index: 3;
+}
+.qm-scroll-left{left: 0.2rem;}
+.qm-scroll-right{right: 0.2rem;}
+
