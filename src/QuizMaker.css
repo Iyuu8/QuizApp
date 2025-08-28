@@ -1,28 +1,50 @@
 :root{
     --filter-text-color:aliceblue;
-    --qm-bkg:rgb(246, 250, 255);
+    --qm-bkg:linear-gradient(to top,rgb(188, 221, 255),rgb(246, 250, 255));
+    --qm-header-border:2px solid rgba(228, 227, 227, 0.6);
+
+    /*dropdown filters*/
     --qm-dropdown-color:rgb(191, 117, 255);
     --qm-dropdown-text-color:rgb(255, 250, 236);
     --qm-dropdown-border-color:rgb(167, 0, 223);
     --qm-dropdown-border:2px solid var(--qm-dropdown-border-color);
     --qm-dropdown-item-hover:rgb(169, 90, 239);
 
+    /*filters colors*/
     --math:rgb(99, 99, 255);
     --chemistry:rgb(0, 161, 0);
     --physics:var(--quiz-maker);
     --science:var(--player);
-    --history:rgb(237, 41, 41);
+    --history:rgb(237, 41, 123);
 }
+
+/*the background of the page*/
+.quiz-maker-bkg-images{
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+#pixel-img1{position:absolute;bottom:-5rem;opacity:0.6;left:-7rem;transform:rotate(5deg);}
+#pixel-img2{position:absolute;bottom:-5rem;opacity:0.9;right:-7rem;transform:rotate(-10deg);}
+#pixel-img3{position:absolute;bottom:0rem;opacity:0.5;right:-10rem;transform:rotate(-10deg);}
+
+
+/*the page itself*/
 .quiz-page{
     height: 100%;
-    background-color: var(--qm-bkg);
+    background: var(--qm-bkg);
+    position: relative;
+    overflow: hidden;
 }
 /*for the header*/
 .qm-header{
     display: flex;
     height: 3rem;
     padding: 0 1rem;
-    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-family: "Pixelify Sans", sans-serif;font-optical-sizing: auto;font-style: normal;
+    border-bottom: var(--qm-header-border);
 }
 .qm-fade-wrapper::before,.qm-fade-wrapper::after{
     content: "";
@@ -133,6 +155,8 @@
     padding: 0 0.5rem;
     border-radius: 0.5rem;
     position: relative;
+    font-family: "Pixelify Sans", sans-serif;font-optical-sizing: auto;font-style: normal;
+    color: var(--text-color);
 }
 .qm-btn-icon{
     font-size: 2.9ch;
@@ -150,4 +174,6 @@
 }
 .qm-scroll-left{left: 0.2rem;}
 .qm-scroll-right{right: 0.2rem;}
+
+
 

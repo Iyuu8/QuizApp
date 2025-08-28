@@ -6,14 +6,15 @@ import {Routes, Route , Link, useLocation} from 'react-router-dom';
 import {motion,AnimatePresence} from 'framer-motion';
 import QuizMaker from "./QuizMaker";
 import NotFound from "./NotFound";
+import QuizMakerBackground from "./QuizMakerBackground";
 
 const HomePage = ()=>{
   return(
     <motion.section
       className="home center"
-      initial={{x:'-100%'}}
-      animate={{x:'0%'}}
-      exit={{x:'-100%'}}
+      initial={{opacity:0}}
+      animate={{opacity:1}}
+      exit={{opacity:0}}
       transition={{ease:'easeOut'}}
     >
       <div className="blur-overlay"></div>
@@ -26,12 +27,13 @@ const HomePage = ()=>{
 const QuizMakerPage=()=>{
   return(
     <motion.div
-      initial={{x:'100%'}}
-      animate={{x:'0%'}}
-      exit={{x:'100%'}}
+      initial={{opacity:0}}
+      animate={{opacity:1}}
+      exit={{opacity:0}}
       transition={{ease:'easeOut'}}
       className="quiz-page"
     >
+      <QuizMakerBackground/>
       <QuizMaker/>
     </motion.div>
   )
