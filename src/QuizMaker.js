@@ -1,7 +1,8 @@
 import {AnimatePresence, motion} from 'framer-motion';
-import { FaCaretDown, FaCaretLeft, FaCaretRight, FaCheck } from 'react-icons/fa';
+import { FaCaretDown, FaCaretLeft, FaCaretRight, FaCheck, FaPlus } from 'react-icons/fa';
 import { FaXmark } from 'react-icons/fa6';
 import { useRef,useState,useEffect } from 'react';
+import {Link} from 'react-router-dom';
 const QuizFilters =({filterStuff})=>{
     const [filters,setFilters]=filterStuff;
     const [openFilters,setOpenFilter]=useState(false);
@@ -137,17 +138,58 @@ const QuizFilters =({filterStuff})=>{
     )
 }
 const Quizes=()=>{
+    const QuizItem=({title,topic})=>{
+        const [showTopic,setShowTopic]=useState(false);
+        return(
+            <li 
+                className='qm-quiz-item'
+                onMouseEnter={()=>setShowTopic(true)}
+                onMouseLeave={()=>setShowTopic(false)}
+            >
+                <Link to='/' className='qm-link-quiz-item center'>
+                <h2 className='qm-quiz-title'>{title}</h2>
+                <AnimatePresence>
+                {showTopic &&
+                    <motion.div 
+                        className='qm-quiz-topic-container center'
+                        initial={{opacity:0,height:'20%'}}
+                        animate={{opacity:1,height:'100%'}}
+                        exit={{opacity:0,height:'20%'}}
+
+                    ><h2>{topic}</h2></motion.div>
+                }
+                </AnimatePresence>
+                </Link>
+            </li>
+        )
+    }
+    const AddQuiz=()=>{
+        return(
+            <li className='qm-add-quiz center'>
+                <Link to='/' className='qm-link-quiz-add center'><FaPlus/></Link>
+            </li>
+        )
+    }
     return(
-        <></>
+        <div className='qm-quiz-container'>
+            <ul className='qm-quiz-list'>
+                <QuizItem title={'quiz 1'} topic={'MATH'}/>
+                <QuizItem title={'quiz 2'} topic={'SCIENCE'}/>
+                <QuizItem title={'quiz 2'} topic={'SCIENCE'}/>
+                
+
+                <AddQuiz/>
+            </ul>
+        </div>
     )
 }
 const QuizMaker=()=>{
     const [filters,setFilters]=useState([
-        {topic:'MATH',color:'var(--math)',checked:false},
-        {topic:'SCIENCE',color:'var(--science)',checked:false},
-        {topic:'PHYSICS',color:'var(--physics)',checked:false},
-        {topic:'CHEMISTRY',color:'var(--chemistry)',checked:false},
-        {topic:'HISTORY',color:'var(--history)',checked:false}
+        {topic:'MATH',color:'var(--math)',checked:true},
+        {topic:'SCIENCE',color:'var(--science)',checked:true},
+        {topic:'PHYSICS',color:'var(--physics)',checked:true},
+        {topic:'CHEMISTRY',color:'var(--chemistry)',checked:true},
+        {topic:'HISTORY',color:'var(--history)',checked:true}
     ]);
     return(
         <>
@@ -155,7 +197,7 @@ const QuizMaker=()=>{
                 <QuizFilters filterStuff={[filters,setFilters]}/>    
             </header>
             <main className='qm-quizes'>
-
+                <Quizes/>
             </main>
         </>
     )

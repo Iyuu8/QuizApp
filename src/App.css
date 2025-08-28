@@ -254,3 +254,11 @@ button{cursor: pointer;}
   background-color: rgba(0, 0, 0, 0.129);
   backdrop-filter: blur(2px);
 }
+
+
+/*prevent selecting images*/
+img {
+  user-select: none;       
+  pointer-events: none;    
+  -webkit-user-drag: none; 
+}
