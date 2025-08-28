@@ -1,13 +1,32 @@
-import {motion} from 'framer-motion';
-import { FaCaretDown, FaCaretLeft, FaCaretRight } from 'react-icons/fa';
+import {AnimatePresence, motion} from 'framer-motion';
+import { FaCaretDown, FaCaretLeft, FaCaretRight, FaCheck } from 'react-icons/fa';
 import { FaXmark } from 'react-icons/fa6';
 import { useRef,useState,useEffect } from 'react';
-const QuizFilters =()=>{
-    const filters=[
-        {topic:'MATH',color:'rgb(99, 99, 255)'},
-        {topic:'SCIENCE',color:'var(--quiz-maker)'},
-        {topic:'PHYSICS',color:'var(--player)'}
-    ];
+const QuizFilters =({filterStuff})=>{
+    const [filters,setFilters]=filterStuff;
+    const [openFilters,setOpenFilter]=useState(false);
+    const handleFilter=(filter)=>{
+        return (
+            filters.map(item=>(
+                item.topic===filter.topic?
+                {...item,checked:!item.checked}:
+                item
+            ))
+        )
+    }
+    
+    // drop down handling
+    const dropdownRef=useRef();
+    const filterButtonRef=useRef();
+    useEffect(()=>{
+        const closeDrop=(e)=>{
+            if(dropdownRef.current && !dropdownRef.current.contains(e.target) && !filterButtonRef.current.contains(e.target)) setOpenFilter(false);
+        }
+        document.addEventListener('click',closeDrop);
+
+        return ()=>document.removeEventListener('click',closeDrop);
+    },[])
+
     // handling scroll buttons in filter
     const filtersRef = useRef();
     const [showArrowLeft,setShowArrowLeft] = useState(false);
@@ -27,10 +46,7 @@ const QuizFilters =()=>{
             window.removeEventListener('resize',updateButtons);
             if(filtersRef.current) filtersRef.current.removeEventListener('scroll',updateButtons);
         }
-    },[])
-    const handleFilter=()=>{
-        return;
-    }
+    },[filters])
     const handleScrollFilter=(direction)=>{
         if(filtersRef.current){
             filtersRef.current.scrollBy({
@@ -47,25 +63,29 @@ const QuizFilters =()=>{
                     ref={filtersRef}
                 >
                     <ul className='qm-filters-list'>
-                    {filters.map((filter,ind)=>(
-                        <li 
+                    <AnimatePresence>
+                    {filters.filter(item=>item.checked).map((filter,ind)=>(
+                        <motion.li 
                             className='qm-filter-item' 
-                            key={ind}
+                            key={filter.topic}
                             style={{backgroundColor:filter.color}}
+                            onClick={()=>setFilters(handleFilter(filter))}
+                            initial={{opacity:0}}
+                            animate={{opacity:1}}
+                            exit={{opacity:0}}
                         >
                             <p>{filter.topic}</p>
-                            <div className='filter-icon center'><FaXmark/></div>
-                        </li>
+                            <div role='button'className='filter-icon center'><FaXmark/></div>
+                        </motion.li>
                     ))}
+                    </AnimatePresence>
                     </ul>
                 </div> 
-
                { showArrowLeft &&
                 <button 
                     className='qm-scroll-left center'
                     onClick={()=>handleScrollFilter('left')}
                 ><FaCaretLeft/></button>}
-
                { showArrowRight &&
                 <button 
                     className='qm-scroll-right center'
@@ -74,10 +94,44 @@ const QuizFilters =()=>{
             </div>
 
             <div className='qm-filter-add center'>
-                <button className='qm-btn-filter' onClick={handleFilter}>
+                <button 
+                    className='qm-btn-filter' 
+                    onClick={()=>setOpenFilter(!openFilters)}
+                    ref={filterButtonRef}
+                >
                     <h2>Quiz Topic</h2>
                     <div className='qm-btn-icon center'><FaCaretDown/></div>
                 </button>
+                <AnimatePresence>
+                {openFilters &&
+                    <motion.div 
+                        className='qm-dropdown'
+                        initial={{height:'2rem',opacity:0}}
+                        animate={{height:filters.length*2+'rem',opacity:1}}
+                        exit={{height:'1rem',opacity:0}}
+                        ref={dropdownRef}
+
+                    >
+                    <ul className='qm-dropwdown-list'>
+                        {filters.map((filter,ind)=>(
+                            <li 
+                                className='qm-dropdown-item center' 
+                                key={filter.topic}
+                                onClick={()=>setFilters(handleFilter(filter))}
+                            >
+                                {filter.topic}
+
+                                { filter.checked&& 
+                                    <div className='checked-icon'><FaCheck/></div>
+                                }
+                            </li>
+                        ))
+
+                        }
+                    </ul>    
+                    </motion.div>
+                }
+                </AnimatePresence>
             </div>
         </>
     )
@@ -88,10 +142,17 @@ const Quizes=()=>{
     )
 }
 const QuizMaker=()=>{
+    const [filters,setFilters]=useState([
+        {topic:'MATH',color:'var(--math)',checked:false},
+        {topic:'SCIENCE',color:'var(--science)',checked:false},
+        {topic:'PHYSICS',color:'var(--physics)',checked:false},
+        {topic:'CHEMISTRY',color:'var(--chemistry)',checked:false},
+        {topic:'HISTORY',color:'var(--history)',checked:false}
+    ]);
     return(
         <>
             <header className='qm-header'>
-                <QuizFilters/>    
+                <QuizFilters filterStuff={[filters,setFilters]}/>    
             </header>
             <main className='qm-quizes'>
 

@@ -23,12 +23,12 @@ const HomePage = ()=>{
   )
 }
 
-const QuizPage=()=>{
+const QuizMakerPage=()=>{
   return(
     <motion.div
       initial={{x:'100%'}}
       animate={{x:'0%'}}
-      exit={{x:'-100%'}}
+      exit={{x:'100%'}}
       transition={{ease:'easeOut'}}
       className="quiz-page"
     >
@@ -47,7 +47,7 @@ function App() {
       <Routes location={location} key={location.pathname}>
         <Route path="/" element={<HomePage />}/>
         <Route path="player" element={<Player/>}/>
-        <Route path="/QuizMaker" element={<QuizPage/>}/>
+        <Route path="/QuizMaker" element={<QuizMakerPage/>}/>
         <Route path="/*" element={<NotFound/>} />
       </Routes>
       </AnimatePresence>

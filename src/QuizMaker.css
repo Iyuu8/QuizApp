@@ -1,7 +1,17 @@
 :root{
     --filter-text-color:aliceblue;
     --qm-bkg:rgb(246, 250, 255);
-    --a:rgb(85, 177, 85);
+    --qm-dropdown-color:rgb(191, 117, 255);
+    --qm-dropdown-text-color:rgb(255, 250, 236);
+    --qm-dropdown-border-color:rgb(167, 0, 223);
+    --qm-dropdown-border:2px solid var(--qm-dropdown-border-color);
+    --qm-dropdown-item-hover:rgb(169, 90, 239);
+
+    --math:rgb(99, 99, 255);
+    --chemistry:rgb(0, 161, 0);
+    --physics:var(--quiz-maker);
+    --science:var(--player);
+    --history:rgb(237, 41, 41);
 }
 .quiz-page{
     height: 100%;
@@ -20,7 +30,7 @@
     position: absolute;
     top: 0;
     height: 3rem;
-    width: 2rem;
+    width: 1rem;
     background: linear-gradient(var(--direction,to right),var(--qm-bkg),transparent);
 }
 .qm-fade-wrapper::before{
@@ -57,8 +67,12 @@
     font-size: 2.7ch;
     height: 100%;
     width: 2rem;
-    border-left: 1px solid var(--filter-text-color);
+    border-left: 2px solid var(--filter-text-color);
     cursor: pointer;
+    transition: all 0.2s ease;
+}
+.filter-icon:hover{
+    width: 2.2rem;
 }
 .qm-filter-item{
     height: 60%;
@@ -74,7 +88,40 @@
     height: 100%;
 }
 
-.qm-filter-add{height: 100%;}
+.qm-filter-add{height: 100%;position: relative;}
+.qm-dropdown{
+    position: absolute;
+    top: 100%;
+    left: 0%;
+    width: 100%;
+    background-color: var(--qm-dropdown-color);
+    --drop-item-height:2rem;
+    overflow: hidden;
+    border: var(--qm-dropdown-border);
+    border-radius: 0.5rem;
+}
+.qm-dropwdown-list{
+    list-style: none;
+    display: flex;
+    flex-flow: column nowrap;
+    height: 100%;
+    width: 100%;
+}
+.qm-dropdown-item{
+    height: var(--drop-item-height);
+    color: var(--qm-dropdown-text-color);
+    justify-content: start;
+    padding: 0.5rem;
+    cursor: pointer;
+    border-bottom: 1px solid var(--qm-dropdown-border-color);
+    width: 100%;
+    transition: all 0.2s ease;
+}
+.qm-dropdown-item:hover{
+    background-color: var(--qm-dropdown-item-hover);
+}
+.qm-dropdown-item:last-child{border-bottom: none;}
+.checked-icon{margin-left: auto;}
 .qm-btn-filter{
     height: 80%;
     display: flex;
@@ -90,6 +137,7 @@
 .qm-btn-icon{
     font-size: 2.9ch;
 }
+
 .qm-scroll-left,.qm-scroll-right{
     position: absolute;
     top: 50%;
@@ -97,7 +145,7 @@
     border: none;
     background-color: transparent;
     font-size: 4ch;
-    color: var(--text-color);
+    color: var(--qm-dropdown-color);
     z-index: 3;
 }
 .qm-scroll-left{left: 0.2rem;}
