@@ -2,7 +2,7 @@ import {AnimatePresence, motion} from 'framer-motion';
 import { FaCaretDown, FaCaretLeft, FaCaretRight, FaCheck, FaPlus } from 'react-icons/fa';
 import { FaXmark } from 'react-icons/fa6';
 import { useRef,useState,useEffect } from 'react';
-import {Link} from 'react-router-dom';
+import {Link,Routes,Route} from 'react-router-dom';
 const QuizFilters =({filterStuff})=>{
     const [filters,setFilters]=filterStuff;
     const [openFilters,setOpenFilter]=useState(false);
@@ -166,7 +166,10 @@ const Quizes=()=>{
     const AddQuiz=()=>{
         return(
             <li className='qm-add-quiz center'>
-                <Link to='/' className='qm-link-quiz-add center'><FaPlus/></Link>
+                <Link 
+                    to='/CreateQuiz'
+                    className='qm-link-quiz-add center'
+                ><FaPlus/></Link>
             </li>
         )
     }

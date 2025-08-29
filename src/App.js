@@ -7,6 +7,7 @@ import {motion,AnimatePresence} from 'framer-motion';
 import QuizMaker from "./QuizMaker";
 import NotFound from "./NotFound";
 import QuizMakerBackground from "./QuizMakerBackground";
+import CreateQuiz from './CreateQuiz';
 
 const HomePage = ()=>{
   return(
@@ -39,6 +40,20 @@ const QuizMakerPage=()=>{
   )
 }
 
+const CreateQuizPage=()=>{
+  return(
+    <motion.div
+      initial={{opacity:0}}
+      animate={{opacity:1}}
+      exit={{opacity:0}}
+      transition={{ease:'easeOut'}}
+      className="create-quiz-page"
+    >
+      <CreateQuiz/>
+    </motion.div>
+  )
+}
+
 
 function App() {
   const location = useLocation();
@@ -50,7 +65,9 @@ function App() {
         <Route path="/" element={<HomePage />}/>
         <Route path="player" element={<Player/>}/>
         <Route path="/QuizMaker" element={<QuizMakerPage/>}/>
+        <Route path="/CreateQuiz" element={<CreateQuizPage/>}/>
         <Route path="/*" element={<NotFound/>} />
+        
       </Routes>
       </AnimatePresence>
       

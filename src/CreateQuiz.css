@@ -1,0 +1,31 @@
+:root{
+    /*vars for the CreateQuize Page*/
+}
+
+
+.create-quiz-page{
+    height: 100%;
+}
+
+/*styles for the header*/
+.cq-header{
+    height: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0rem 1rem;
+    font-family: "Pixelify Sans", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+
+}
+.cq-header h2{color: var(--text-color-dark);}
+.cq-controls{
+    display: flex;
+}
+
+/*styles for the quiz creation section*/
+.cq-main{
+    flex-grow: 1;
+    height: 100%;
+}
