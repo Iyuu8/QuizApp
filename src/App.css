@@ -262,3 +262,6 @@ img {
   pointer-events: none;    
   -webkit-user-drag: none; 
 }
+ul{
+  list-style: none;
+}

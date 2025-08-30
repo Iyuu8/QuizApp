@@ -5,27 +5,139 @@
 
 .create-quiz-page{
     height: 100%;
+    display: flex;
+    flex-flow:column nowrap ;
 }
-
-/*styles for the header*/
 .cq-header{
     height: 3rem;
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    padding: 0rem 1rem;
+    padding:0rem 1rem;
+    align-items: center;
     font-family: "Pixelify Sans", sans-serif;
     font-optical-sizing: auto;
     font-style: normal;
-
-}
-.cq-header h2{color: var(--text-color-dark);}
-.cq-controls{
-    display: flex;
+    text-decoration: none;
 }
 
-/*styles for the quiz creation section*/
-.cq-main{
-    flex-grow: 1;
+/*the controls of the page*/
+.cq-slide-counter{
     height: 100%;
+}
+.cq-controls{
+    height: 100%;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+/*styling of the counter ( part of the contols )*/
+.cq-counter{
+    height: 80%;
+    background-color: var(--player);
+    color: var(--text-color);
+    padding: 0rem 0.5rem;
+    border-radius: 0.4rem;
+    display: flex;
+    gap: 0.5rem;
+    width: 10rem;
+    align-items: center;
+    font-size: 1.5ch;
+}
+.cq-counter h2{
+    width: 6.5rem;
+    user-select: none;       
+    pointer-events: none; 
+}
+.cq-counter-contols{
+    height: 100%;
+    display: flex;
+    flex-flow:column nowrap;
+    justify-content: center;
+    justify-content: center;
+    flex-grow: 1;
+}
+.cq-counter-up,.cq-counter-down{
+    display: flex;
+    align-items: var(--place,start);
+    font-size: 2ch;
+    cursor: pointer;
+    justify-content: center;
+}
+.cq-counter-up{--place:end}
+.cq-dropdown-item{
+    cursor: pointer;
+}
+
+/*syling for the dropdown to choose the topic*/
+.dropdown-container{
+    width: 6rem;
+    height: 100%;
+    position: relative;
+}
+.cq-topic{
+    height:80%;
+    border: none;
+    background-color: var(--quiz-maker);
+    color: var(--text-color);
+    font-family: "Pixelify Sans", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+    text-decoration: none;
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    padding: 0rem 0.5rem;
+    border-radius: 0.2rem;
+    transition: all 0.2s ease;
+}
+.cq-topic:hover{
+    transform: scale(1.02);
+}
+.cq-topic-icon{
+    height: 100%;
+    font-size: 2.6ch;
+}
+.cq-dropdown-topic{
+    --item-height:2rem;
+    height:calc(var(--item-height)*var(--nb-items));
+    position: absolute;
+    top: 100%;
+    background-color: var(--qm-dropdown-color);
+    width: 150%;
+    overflow: hidden;
+    border: var(--qm-dropdown-border);
+    border-radius: 0.3rem;
+}
+.cq-dropdown-list{
+    width: 100%;
+    height: 100%;
+}
+.cq-dropdown-item{
+    height: var(--item-height);
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    padding: 0rem 0.5rem;
+    font-size: 1.3ch;
+    border-bottom: var(--qm-dropdown-border);
+    color: var(--qm-dropdown-text-color);
+    transition: all 0.2s ease;
+}
+.cq-dropdown-item:last-child{border: none;}
+.cq-dropdown-item:hover{
+    background-color: var(--qm-dropdown-item-hover);
+}
+.cq-dropdown-item-icon{margin-left: auto;}
+/*styling for the text input to choose the title for the quiz*/
+.cq-title{
+    height: 70%;
+    outline: none;
+    border-radius: 0.3rem;
+    padding-left: 1rem;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-size: 2ch;
+    border: 2px solid var(--text-color-dark);
+    color: var(--text-color-dark);
+
 }
