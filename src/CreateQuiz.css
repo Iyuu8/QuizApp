@@ -1,6 +1,15 @@
 :root{
     /*vars for the CreateQuize Page*/
-    /**/
+
+    --cq-nq-border-color:2px dashed #ceb6ff;
+    --cq-nq-bkg-color:rgba(210, 142, 255, 0.199);
+    --cq-nq-icon-color:rgb(242, 196, 255);
+    --cq-nq-bkg-color-hover:rgba(210, 142, 255, 0.278);
+    --cq-nq-icon-color-hover:rgb(238, 175, 255);
+    --cq-qs-control-color:rgb(205, 129, 248);
+    --cq-qs-control-bkg-color:rgba(199, 147, 252, 0.089);
+    --cq-qs-control-bkg-color-hover:rgba(173, 102, 244, 0.131);
+
 }
 
 
@@ -19,6 +28,7 @@
     font-optical-sizing: auto;
     font-style: normal;
     text-decoration: none;
+    border: var(--qm-header-border);
 }
 
 /*the controls of the page*/
@@ -74,6 +84,7 @@
     width: 6rem;
     height: 100%;
     position: relative;
+    z-index: 3;
 }
 .cq-topic{
     height:80%;
@@ -141,4 +152,58 @@
     border: 2px solid var(--text-color-dark);
     color: var(--text-color-dark);
 
+}
+
+/*styling for the main section*/
+.cq-main{
+    flex-grow: 1;
+    height: 100%;
+}
+.cq-nq-container{
+    width: 100%;
+    height: 100%;
+    background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' stroke='%23ceb6ff' stroke-width='4' stroke-dasharray='6%2c 14' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e");
+    border-radius: 1rem;
+    background-color: var(--cq-nq-bkg-color);
+    cursor: pointer;
+    transition: all 0.4s ease;
+}
+.cq-nq-container:hover{background-color: var(--cq-nq-bkg-color-hover);}
+.cq-nq-container:hover .cq-nq-icon{color: var(--cq-nq-icon-color-hover);}
+.cq-nq-icon{
+    width: 10rem;
+    height: 10rem;
+    font-size: 10rem;
+    color: var(--cq-nq-icon-color);
+    transition: all 0.4s ease;
+}
+.cq-qs-container{
+    position: relative;
+    width: clamp(50vw,80%,95%);
+    height: 90%;
+}
+
+.cq-qs-next-slide,.cq-qs-prev-slide{
+    border: none;
+    position: absolute;
+    top: 0%;
+    height: 100%;
+    width: clamp(2rem,3rem,3rem);
+    font-size: 5.5ch;
+    background-color: var(--cq-qs-control-bkg-color);
+    color: var(--cq-qs-control-color);
+    border-radius: 0.5rem;
+    transition: all 0.4s ease;
+}
+.cq-qs-next-slide{
+    right:-3.2rem;
+}
+.cq-qs-prev-slide{
+    left: -3.2rem;
+    --dir:-0.2rem;
+}
+.cq-qs-next-slide:hover,.cq-qs-prev-slide:hover{
+    background-color: var(--cq-qs-control-bkg-color-hover);
+    width: clamp(2.1rem,3.2rem,3.3rem);
+    transform: translateX(var(--dir,0.2rem));
 }

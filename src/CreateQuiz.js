@@ -1,7 +1,8 @@
 import {motion,AnimatePresence} from 'framer-motion';
 import { useState, useEffect, useRef } from 'react';
-import { FaCaretDown,FaCaretUp, FaCheck } from 'react-icons/fa';
+import { FaCaretDown,FaCaretLeft,FaCaretRight,FaCaretUp, FaCheck, FaPlus } from 'react-icons/fa';
 
+/* cq stands create quiz, nq stands for new quiz and qs stands for quiz slider*/
 
 const QuizControls=({topicStuff,titleStuff,quizTopicStuff})=>{
     const [counter,setCounter]=useState(0);
@@ -106,6 +107,52 @@ const QuizControls=({topicStuff,titleStuff,quizTopicStuff})=>{
     )
 }
 
+
+const QuizSlider=({quizSliderStuff,currIndStuff})=>{
+    const [quizSlides,setQuizSlides]=quizSliderStuff;
+    const [currInd,setCurrInd]=currIndStuff;
+    const NewQuiz=()=>{
+        return(
+            <motion.div 
+                className='cq-nq-container center' 
+                role='button'
+                onClick={()=>setQuizSlides([...quizSlides,{}])}
+                initial={{opacity:0}}
+                animate={{opacity:1}}
+                exit={{opacity:0}}
+
+            >
+                <div className='cq-nq-icon center'>
+                    <FaPlus/>
+                </div>
+
+            </motion.div>
+        )
+    }
+
+    const QuizSlide=()=>{
+        return(
+            <>this is a quiz slide</>
+        )
+    }
+    return(
+        <div className='cq-qs-container'>
+            <button className='cq-qs-next-slide center'><FaCaretRight/></button>
+            <button className='cq-qs-prev-slide center'><FaCaretLeft/></button>
+            <AnimatePresence exitBeforeEnter initial={false}>
+            {(!quizSlides.length || currInd>=quizSlides.length)&&
+                <NewQuiz/>
+            }
+            </AnimatePresence>
+            {!(!quizSlides.length || currInd>=quizSlides.length) && 
+                <QuizSlide/>
+            }
+
+            
+        </div>
+    )
+}
+
 const CreateQuiz=()=>{
     const [nbSlides,setNbSlides]=useState(0);
     const [topic,setTopic]=useState([
@@ -117,6 +164,10 @@ const CreateQuiz=()=>{
     ]);
     const [title,setTitle]=useState('');
     const [quizTopic,setQuizTopic]=useState('MATH');
+
+    /*state of the quiz creating area*/
+    const [quizSlides,setQuizSlides]=useState([]);
+    const [currInd,setCurrInd]=useState(0);
     return(
         <>
             <header className='cq-header'>
@@ -127,6 +178,12 @@ const CreateQuiz=()=>{
                     quizTopicStuff={[quizTopic,setQuizTopic]}
                 />
             </header>
+            <main className='cq-main center'>
+                <QuizSlider
+                    quizSliderStuff={[quizSlides,setQuizSlides]}
+                    currIndStuff={[currInd,setCurrInd]}
+                />
+            </main>
             
         </>
     )
