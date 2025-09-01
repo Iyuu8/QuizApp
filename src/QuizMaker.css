@@ -61,18 +61,20 @@
     top: 0;
     height: 3rem;
     width: 1rem;
-    background: linear-gradient(var(--direction,to right),var(--qm-bkg),transparent);
+    background: linear-gradient(var(--direction,to right),var(--text-color),transparent);
+    z-index: 3;
 }
 .qm-fade-wrapper::before{
     --direction:to left;
-    right: 0;
+    right: -2px;
 }
-.qm-fade-wrapper::after{left: 0;}
+.qm-fade-wrapper::after{left: -2px;}
 .qm-fade-wrapper{
     flex: 1;
     height: 100%;
     position: relative;
     overflow: hidden;
+    z-index: 3;
 }
 .qm-filters{
     height: 100%;
@@ -129,6 +131,7 @@
     overflow: hidden;
     border: var(--qm-dropdown-border);
     border-radius: 0.5rem;
+    z-index: 3;
 }
 .qm-dropwdown-list{
     list-style: none;

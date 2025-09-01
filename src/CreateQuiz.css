@@ -21,6 +21,7 @@
 .cq-header{
     height: 3rem;
     display: flex;
+    gap: 0.5rem;
     justify-content: space-between;
     padding:0rem 1rem;
     align-items: center;
@@ -36,10 +37,12 @@
     height: 100%;
 }
 .cq-controls{
+    flex-grow: 1;
     height: 100%;
     display: flex;
-    gap: 1rem;
+    gap: 2%;
     align-items: center;
+    justify-content: end;
 }
 /*styling of the counter ( part of the contols )*/
 .cq-counter{
@@ -49,15 +52,16 @@
     padding: 0rem 0.5rem;
     border-radius: 0.4rem;
     display: flex;
-    gap: 0.5rem;
-    width: 10rem;
+    gap: 0.1rem;
+    max-width: 8.9rem;
     align-items: center;
     font-size: 1.5ch;
 }
 .cq-counter h2{
-    width: 6.5rem;
+    flex-grow: 1;
     user-select: none;       
     pointer-events: none; 
+    min-width: max-content;
 }
 .cq-counter-contols{
     height: 100%;
@@ -65,7 +69,6 @@
     flex-flow:column nowrap;
     justify-content: center;
     justify-content: center;
-    flex-grow: 1;
 }
 .cq-counter-up,.cq-counter-down{
     display: flex;
@@ -88,6 +91,7 @@
 }
 .cq-topic{
     height:80%;
+    max-width: 6rem;
     border: none;
     background-color: var(--quiz-maker);
     color: var(--text-color);
@@ -116,6 +120,7 @@
     top: 100%;
     background-color: var(--qm-dropdown-color);
     width: 150%;
+    min-width: 150px;
     overflow: hidden;
     border: var(--qm-dropdown-border);
     border-radius: 0.3rem;
@@ -206,4 +211,45 @@
     background-color: var(--cq-qs-control-bkg-color-hover);
     width: clamp(2.1rem,3.2rem,3.3rem);
     transform: translateX(var(--dir,0.2rem));
+}
+
+
+/*styles for optimizing resizing*/
+@media screen and (max-width:670px) {
+    .cq-change-title-btn{
+        height: 70%;
+        border: none;
+        max-width: 4rem;
+        background-color: var(--cq-nq-bkg-color);
+        color: var(--cq-qs-control-color); 
+        font-family: "Pixelify Sans", sans-serif;
+        font-optical-sizing: auto;
+        font-style: normal;
+        width: 100%;
+        border-radius: 0.2rem;
+        transition: all 0.2s ease;
+        font-size: clamp(1.8ch,2ch,2.2ch);
+    }
+    .cq-change-title-btn:hover{
+        background-color: var(--cq-nq-bkg-color-hover);
+    }
+
+    .cq-topic h2{
+        font-size: 2.2ch;
+    }
+}
+@media screen and (max-width:455px) {
+    .cq-counter h2{font-size: 2.2ch;}
+}
+@media screen and (max-width:435px) {
+    .cq-counter h2{font-size: 1.9ch;}
+    .cq-controls{gap: 0.2rem;}
+    .cq-counter{padding: 0rem 0.2rem;}
+    .cq-topic{padding: 0 0.2rem; gap: 0.2rem;}
+    .cq-slide-counter{font-size: 2.3ch;flex-grow: 1;}
+    .cq-header{padding: 0 0.3rem;}
+}   
+@media screen and (max-width:350px) {
+    .cq-slide-counter{font-size: 2ch}
+
 }

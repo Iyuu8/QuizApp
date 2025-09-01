@@ -51,7 +51,7 @@ const QuizFilters =({filterStuff})=>{
     const handleScrollFilter=(direction)=>{
         if(filtersRef.current){
             filtersRef.current.scrollBy({
-                left:direction==='left'? -100:100,
+                left:direction==='left'? -50:50,
                 behavior:'smooth'
             });
         }

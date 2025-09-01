@@ -1,10 +1,11 @@
 import {motion,AnimatePresence} from 'framer-motion';
 import { useState, useEffect, useRef } from 'react';
 import { FaCaretDown,FaCaretLeft,FaCaretRight,FaCaretUp, FaCheck, FaPlus } from 'react-icons/fa';
+import { WiDayCloudy } from 'react-icons/wi';
 
 /* cq stands create quiz, nq stands for new quiz and qs stands for quiz slider*/
 
-const QuizControls=({topicStuff,titleStuff,quizTopicStuff})=>{
+const QuizControls=({topicStuff,titleStuff,quizTopicStuff,screenSize,modalStuff})=>{
     const [counter,setCounter]=useState(0);
     const [openDrop,setOpenDrop]=useState(false);
 
@@ -36,6 +37,10 @@ const QuizControls=({topicStuff,titleStuff,quizTopicStuff})=>{
         document.addEventListener('click',closeDrop);
         return ()=>document.removeEventListener('click',closeDrop);
     },[])
+
+    /* for screen resize*/
+    const [isMobile,setIsMobile] = screenSize;
+    const [openModal,setOpenModal]=modalStuff;
 
     return(
         <div className='cq-controls'>
@@ -94,15 +99,22 @@ const QuizControls=({topicStuff,titleStuff,quizTopicStuff})=>{
 
                 </div>
             </div>
-            <input 
-                type='text'
-                placeholder='Quiz Title'
-                className='cq-title'
-                value={title}
-                onChange={(e)=>setTitle(e.target.value)}
-                required
-            />
-
+            { !isMobile?
+                (<input 
+                    type='text'
+                    placeholder='Quiz Title'
+                    className='cq-title'
+                    value={title}
+                    onChange={(e)=>setTitle(e.target.value)}
+                    required
+                />)
+                :(
+                <button 
+                    className='cq-change-title-btn'
+                    onClick={()=>setOpenModal(!openModal)}
+                >Title</button>
+                )
+            }
         </div>
     )
 }
@@ -137,8 +149,17 @@ const QuizSlider=({quizSliderStuff,currIndStuff})=>{
     }
     return(
         <div className='cq-qs-container'>
-            <button className='cq-qs-next-slide center'><FaCaretRight/></button>
-            <button className='cq-qs-prev-slide center'><FaCaretLeft/></button>
+            <button 
+                className='cq-qs-next-slide center'
+                onClick={()=>setCurrInd(
+                    !(!quizSlides.length || currInd>=quizSlides.length)?
+                    currInd+1:currInd
+                )}
+            ><FaCaretRight/></button>
+            <button 
+                className='cq-qs-prev-slide center'
+                onClick={()=>setCurrInd( currInd>0? currInd-1:currInd)}
+            ><FaCaretLeft/></button>
             <AnimatePresence exitBeforeEnter initial={false}>
             {(!quizSlides.length || currInd>=quizSlides.length)&&
                 <NewQuiz/>
@@ -150,6 +171,28 @@ const QuizSlider=({quizSliderStuff,currIndStuff})=>{
 
             
         </div>
+    )
+}
+
+const TitleModal=({titleStuff})=>{
+    const [title,setTitle]=titleStuff;
+    return(
+        <div className='cq-change-title-modal'>
+            <form action="submit">
+                <input 
+                    type='text'
+                    placeholder='Quiz Title'
+                    className='cq-title'
+                    value={title}
+                    onChange={(e)=>setTitle(e.target.value)}
+                    required
+                />
+                <button className='cq-submit-title'>Confirm</button>
+
+            </form>
+            
+
+        </div>  
     )
 }
 
@@ -168,6 +211,17 @@ const CreateQuiz=()=>{
     /*state of the quiz creating area*/
     const [quizSlides,setQuizSlides]=useState([]);
     const [currInd,setCurrInd]=useState(0);
+
+    /* for adjucements on smaller screens*/
+    const [isMobile,setIsMobile]=useState(false);
+    const [openModal,setOpenModal]=useState(false);
+    useEffect(()=>{
+        const hanldeResize=()=>setIsMobile(window.innerWidth<=670? true:false);
+        hanldeResize();
+        window.addEventListener('resize',hanldeResize);
+        return ()=>window.removeEventListener('resize',hanldeResize);
+
+    },[]) 
     return(
         <>
             <header className='cq-header'>
@@ -176,13 +230,21 @@ const CreateQuiz=()=>{
                     topicStuff={[topic,setTopic]}
                     titleStuff={[title,setTitle]}
                     quizTopicStuff={[quizTopic,setQuizTopic]}
+                    screenSize={[isMobile,setIsMobile]}
+                    modalStuff={[openModal,setOpenModal]}
                 />
             </header>
             <main className='cq-main center'>
                 <QuizSlider
                     quizSliderStuff={[quizSlides,setQuizSlides]}
                     currIndStuff={[currInd,setCurrInd]}
+                    screenSize={[isMobile,setIsMobile]}
                 />
+                {openModal &&
+                    <TitleModal
+                        titleStuff={[title,setTitle]}
+                    />
+                }
             </main>
             
         </>
@@ -191,3 +253,5 @@ const CreateQuiz=()=>{
 
 
 export default CreateQuiz;
+
+/*never give up and always believe in yourself benazizab*/
