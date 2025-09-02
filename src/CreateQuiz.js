@@ -1,6 +1,7 @@
 import {motion,AnimatePresence} from 'framer-motion';
 import { useState, useEffect, useRef } from 'react';
 import { FaCaretDown,FaCaretLeft,FaCaretRight,FaCaretUp, FaCheck, FaPlus } from 'react-icons/fa';
+import { FaXmark } from 'react-icons/fa6';
 import { WiDayCloudy } from 'react-icons/wi';
 
 /* cq stands create quiz, nq stands for new quiz and qs stands for quiz slider*/
@@ -119,7 +120,6 @@ const QuizControls=({topicStuff,titleStuff,quizTopicStuff,screenSize,modalStuff}
     )
 }
 
-
 const QuizSlider=({quizSliderStuff,currIndStuff})=>{
     const [quizSlides,setQuizSlides]=quizSliderStuff;
     const [currInd,setCurrInd]=currIndStuff;
@@ -144,7 +144,16 @@ const QuizSlider=({quizSliderStuff,currIndStuff})=>{
 
     const QuizSlide=()=>{
         return(
-            <>this is a quiz slide</>
+            <motion.div 
+                className='cq-nq-slide'
+                initial={{opacity:0}}
+                animate={{opacity:1}}
+                exit={{opacity:0}}
+
+            >
+                new quiz
+
+            </motion.div>
         )
     }
     return(
@@ -160,29 +169,50 @@ const QuizSlider=({quizSliderStuff,currIndStuff})=>{
                 className='cq-qs-prev-slide center'
                 onClick={()=>setCurrInd( currInd>0? currInd-1:currInd)}
             ><FaCaretLeft/></button>
-            <AnimatePresence exitBeforeEnter initial={false}>
-            {(!quizSlides.length || currInd>=quizSlides.length)&&
-                <NewQuiz/>
-            }
+
+            <AnimatePresence mode='wait' initial={false}>
+
+                {(!quizSlides.length || currInd>=quizSlides.length)&&
+                    <NewQuiz key='newQuiz'/>
+                }            
+                {!(!quizSlides.length || currInd>=quizSlides.length) && 
+                    <QuizSlide 
+                        key={`quizSlide${currInd}`}
+                    />
+                }
             </AnimatePresence>
-            {!(!quizSlides.length || currInd>=quizSlides.length) && 
-                <QuizSlide/>
-            }
 
             
         </div>
     )
 }
 
-const TitleModal=({titleStuff})=>{
+/* the modal to change the title ( for mobiles only )*/
+const TitleModal=({titleStuff,modalStuff})=>{
     const [title,setTitle]=titleStuff;
+    const [openModal,setOpenModal]=modalStuff;
+    const handleSubmit=(e)=>{
+        e.preventDefault();
+        setOpenModal(false);
+    }
     return(
-        <div className='cq-change-title-modal'>
-            <form action="submit">
+        <motion.div 
+            className='cq-change-title-modal'
+            initial={{top:'-100%',opacity:0}}
+            animate={{top:'50%',opacity:1}}
+            exit={{top:'-100%',opacity:0}}
+            transition={{type:'spring',duration:1}}
+
+        >
+            <form 
+                action="submit" 
+                className='cq-title-form'
+                onSubmit={(e)=>handleSubmit(e)}
+            >
                 <input 
                     type='text'
                     placeholder='Quiz Title'
-                    className='cq-title'
+                    className='cq-title cq-title-mobile'
                     value={title}
                     onChange={(e)=>setTitle(e.target.value)}
                     required
@@ -190,13 +220,15 @@ const TitleModal=({titleStuff})=>{
                 <button className='cq-submit-title'>Confirm</button>
 
             </form>
-            
-
-        </div>  
+            <button 
+                className='cq-modal-exit center'
+                onClick={()=>setOpenModal(false)}
+            ><FaXmark/></button>
+        </motion.div>  
     )
 }
 
-const CreateQuiz=()=>{
+const CreateQuiz=({blurStuff})=>{
     const [nbSlides,setNbSlides]=useState(0);
     const [topic,setTopic]=useState([
         {topic:'MATH',checked:true},
@@ -212,7 +244,7 @@ const CreateQuiz=()=>{
     const [quizSlides,setQuizSlides]=useState([]);
     const [currInd,setCurrInd]=useState(0);
 
-    /* for adjucements on smaller screens*/
+    /* for adjucements on smaller screens the title input is replaced with a modal*/
     const [isMobile,setIsMobile]=useState(false);
     const [openModal,setOpenModal]=useState(false);
     useEffect(()=>{
@@ -222,6 +254,16 @@ const CreateQuiz=()=>{
         return ()=>window.removeEventListener('resize',hanldeResize);
 
     },[]) 
+    useEffect(()=>{
+        setOpenModal(!isMobile? false:openModal)
+    },[isMobile])
+
+    /* to set the blur based on the whether the modal is mounted or not*/
+    const [isBlur,setIsblur]=blurStuff;
+    useEffect(()=>{
+        setIsblur(openModal);
+    },[openModal])
+
     return(
         <>
             <header className='cq-header'>
@@ -240,11 +282,15 @@ const CreateQuiz=()=>{
                     currIndStuff={[currInd,setCurrInd]}
                     screenSize={[isMobile,setIsMobile]}
                 />
+
+                <AnimatePresence>
                 {openModal &&
                     <TitleModal
                         titleStuff={[title,setTitle]}
+                        modalStuff={[openModal,setOpenModal]}
                     />
                 }
+                </AnimatePresence>
             </main>
             
         </>

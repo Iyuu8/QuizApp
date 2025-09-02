@@ -40,7 +40,7 @@ const QuizMakerPage=()=>{
   )
 }
 
-const CreateQuizPage=()=>{
+const CreateQuizPage=({blurStuff})=>{
   return(
     <motion.div
       initial={{opacity:0}}
@@ -49,7 +49,19 @@ const CreateQuizPage=()=>{
       transition={{ease:'easeOut'}}
       className="create-quiz-page"
     >
-      <CreateQuiz/>
+      <CreateQuiz blurStuff={blurStuff}/>
+    </motion.div>
+  )
+}
+
+const Blur=()=>{
+  return(
+    <motion.div
+      className="blur-overlay"
+      initial={{opacity:0}}
+      animate={{opacity:1}}
+      exit={{opacity:0}}
+    >
     </motion.div>
   )
 }
@@ -57,15 +69,23 @@ const CreateQuizPage=()=>{
 
 function App() {
   const location = useLocation();
+  const [isBlur,setIsblur]=useState(false);
   return (
     <div className="App">
+      {/*multipuropse blur overlay*/}
+      <AnimatePresence>
+        {isBlur &&
+          <Blur/>
+        }
+      </AnimatePresence>
 
+      {/* the pages of the website*/}
       <AnimatePresence exitBeforeEnter mode="wait" initial={false}>
       <Routes location={location} key={location.pathname}>
         <Route path="/" element={<HomePage />}/>
         <Route path="player" element={<Player/>}/>
         <Route path="/QuizMaker" element={<QuizMakerPage/>}/>
-        <Route path="/CreateQuiz" element={<CreateQuizPage/>}/>
+        <Route path="/CreateQuiz" element={<CreateQuizPage blurStuff={[isBlur,setIsblur]}/>}/>
         <Route path="/*" element={<NotFound/>} />
         
       </Routes>
