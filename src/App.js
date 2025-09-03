@@ -2,12 +2,14 @@ import Home from "./home";
 import HomeBackground from "./home_background";
 import Player from './player'
 import { useState,useEffect} from "react";
-import {Routes, Route , Link, useLocation} from 'react-router-dom';
+import {Routes, Route , Link, useLocation, useNavigate} from 'react-router-dom';
 import {motion,AnimatePresence} from 'framer-motion';
 import QuizMaker from "./QuizMaker";
 import NotFound from "./NotFound";
 import QuizMakerBackground from "./QuizMakerBackground";
 import CreateQuiz from './CreateQuiz';
+import FetchError from './FetchError';
+import useAxiosFetch from './Hooks/useAxiosFetch';
 
 const HomePage = ()=>{
   return(
@@ -25,7 +27,8 @@ const HomePage = ()=>{
   )
 }
 
-const QuizMakerPage=()=>{
+const QuizMakerPage=({blurStuff})=>{
+  const [isBlur,setIsblur]=blurStuff;
   return(
     <motion.div
       initial={{opacity:0}}
@@ -35,7 +38,7 @@ const QuizMakerPage=()=>{
       className="quiz-page"
     >
       <QuizMakerBackground/>
-      <QuizMaker/>
+      <QuizMaker blurStuff={[isBlur,setIsblur]}/>
     </motion.div>
   )
 }
@@ -57,7 +60,7 @@ const CreateQuizPage=({blurStuff})=>{
 const Blur=()=>{
   return(
     <motion.div
-      className="blur-overlay"
+      className="blur-overlay-modal"
       initial={{opacity:0}}
       animate={{opacity:1}}
       exit={{opacity:0}}
@@ -70,6 +73,15 @@ const Blur=()=>{
 function App() {
   const location = useLocation();
   const [isBlur,setIsblur]=useState(false);
+  const navigate = useNavigate();
+
+  /* the api request to get the quizes*/
+  const {data,error,loading}=useAxiosFetch('quizes');
+  const [quizes,setQuizes]=useState([]);
+  useEffect(()=>{
+    if(!error && !loading) setQuizes(data);
+    if(error) navigate('/FetchError')
+  },[data])
   return (
     <div className="App">
       {/*multipuropse blur overlay*/}
@@ -78,14 +90,15 @@ function App() {
           <Blur/>
         }
       </AnimatePresence>
-
+        
       {/* the pages of the website*/}
       <AnimatePresence exitBeforeEnter mode="wait" initial={false}>
       <Routes location={location} key={location.pathname}>
         <Route path="/" element={<HomePage />}/>
         <Route path="player" element={<Player/>}/>
-        <Route path="/QuizMaker" element={<QuizMakerPage/>}/>
-        <Route path="/CreateQuiz" element={<CreateQuizPage blurStuff={[isBlur,setIsblur]}/>}/>
+        <Route path="/QuizMaker" element={<QuizMakerPage blurStuff={[isBlur,setIsblur]} quizStuff={[quizes,setQuizes]}/>}/>
+        <Route path="/CreateQuiz/:id" element={<CreateQuizPage blurStuff={[isBlur,setIsblur]}/>}/>
+        <Route path="/FetchError" element={<FetchError/>}/>
         <Route path="/*" element={<NotFound/>} />
         
       </Routes>

@@ -258,7 +258,7 @@ button{cursor: pointer;}
 }
 
 /* styling for the blur overlay*/
-.blur-overlay{
+.blur-overlay-modal{
   position: absolute;
   width: 100%;
   height: 100vh;

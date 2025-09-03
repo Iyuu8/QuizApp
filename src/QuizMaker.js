@@ -3,6 +3,7 @@ import { FaCaretDown, FaCaretLeft, FaCaretRight, FaCheck, FaPlus } from 'react-i
 import { FaXmark } from 'react-icons/fa6';
 import { useRef,useState,useEffect } from 'react';
 import {Link,Routes,Route} from 'react-router-dom';
+import { TitleModal } from './CreateQuiz';
 const QuizFilters =({filterStuff})=>{
     const [filters,setFilters]=filterStuff;
     const [openFilters,setOpenFilter]=useState(false);
@@ -137,7 +138,11 @@ const QuizFilters =({filterStuff})=>{
         </>
     )
 }
-const Quizes=()=>{
+const Quizes=({modalStuff})=>{
+    const [openModal,setOpenModal]=modalStuff;
+    const handleNewQuiz=()=>{
+        setOpenModal(true);
+    }
     const QuizItem=({title,topic})=>{
         const [showTopic,setShowTopic]=useState(false);
         return(
@@ -165,28 +170,26 @@ const Quizes=()=>{
     }
     const AddQuiz=()=>{
         return(
-            <li className='qm-add-quiz center'>
-                <Link 
-                    to='/CreateQuiz'
+            <li 
+                className='qm-add-quiz center'
+                onClick={handleNewQuiz}
+            >
+                <h3 
+                    to='/QuizMaker'
                     className='qm-link-quiz-add center'
-                ><FaPlus/></Link>
+                ><FaPlus/></h3>
             </li>
         )
     }
     return(
         <div className='qm-quiz-container'>
             <ul className='qm-quiz-list'>
-                <QuizItem title={'quiz 1'} topic={'MATH'}/>
-                <QuizItem title={'quiz 2'} topic={'SCIENCE'}/>
-                <QuizItem title={'quiz 2'} topic={'SCIENCE'}/>
-                
-
                 <AddQuiz/>
             </ul>
         </div>
     )
 }
-const QuizMaker=()=>{
+const QuizMaker=({blurStuff})=>{
     const [filters,setFilters]=useState([
         {topic:'MATH',color:'var(--math)',checked:true},
         {topic:'SCIENCE',color:'var(--science)',checked:true},
@@ -194,13 +197,29 @@ const QuizMaker=()=>{
         {topic:'CHEMISTRY',color:'var(--chemistry)',checked:true},
         {topic:'HISTORY',color:'var(--history)',checked:true}
     ]);
+    const [openModal,setOpenModal]=useState(false);
+    const [title,setTitle]=useState('');
+    const [isBlur,setIsblur]=blurStuff;
+    useEffect(()=>{
+        setIsblur(openModal);
+    },[openModal])
     return(
         <>
             <header className='qm-header'>
                 <QuizFilters filterStuff={[filters,setFilters]}/>    
             </header>
             <main className='qm-quizes'>
-                <Quizes/>
+                <Quizes modalStuff={[openModal,setOpenModal]}/>
+
+                <AnimatePresence>
+                {openModal&&
+                    <TitleModal
+                        titleStuff={[title,setTitle]} 
+                        modalStuff={[openModal,setOpenModal]}
+                        link='/CreateQuiz'
+                    />
+                }
+                </AnimatePresence>
             </main>
         </>
     )

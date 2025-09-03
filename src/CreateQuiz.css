@@ -231,7 +231,7 @@
 }
 .cq-title-form{
     display: flex;
-    gap: 0.8rem;
+    gap: 0.3rem;
     align-items: center;
     height: 4rem;
     width: 100%;
@@ -240,6 +240,7 @@
 .cq-title-mobile{
     height: 2.4rem;
     border-color: var(--cq-nq-bkg-color-hover);
+    width: clamp(50%,60%,80%);
 }
 .cq-submit-title{
     font-family: "Pixelify Sans", sans-serif;
@@ -253,6 +254,7 @@
     font-size: 1.8ch;
     border-radius: 0.2rem;
 }
+
 .cq-modal-exit{
     position: absolute;
     top: 0.2rem;
