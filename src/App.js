@@ -43,7 +43,7 @@ const QuizMakerPage=({blurStuff})=>{
   )
 }
 
-const CreateQuizPage=({blurStuff})=>{
+const CreateQuizPage=({blurStuff,quizStuff})=>{
   return(
     <motion.div
       initial={{opacity:0}}
@@ -52,7 +52,7 @@ const CreateQuizPage=({blurStuff})=>{
       transition={{ease:'easeOut'}}
       className="create-quiz-page"
     >
-      <CreateQuiz blurStuff={blurStuff}/>
+      <CreateQuiz blurStuff={blurStuff} quizStuff={quizStuff}/>
     </motion.div>
   )
 }
@@ -97,7 +97,7 @@ function App() {
         <Route path="/" element={<HomePage />}/>
         <Route path="player" element={<Player/>}/>
         <Route path="/QuizMaker" element={<QuizMakerPage blurStuff={[isBlur,setIsblur]} quizStuff={[quizes,setQuizes]}/>}/>
-        <Route path="/CreateQuiz/:id" element={<CreateQuizPage blurStuff={[isBlur,setIsblur]}/>}/>
+        <Route path="/CreateQuiz/:id" element={<CreateQuizPage blurStuff={[isBlur,setIsblur]} quizStuff={[quizes,setQuizes]}/>}/>
         <Route path="/FetchError" element={<FetchError/>}/>
         <Route path="/*" element={<NotFound/>} />
         

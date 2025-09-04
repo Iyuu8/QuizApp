@@ -134,24 +134,31 @@ const QuizControls=({topicStuff,titleStuff,quizTopicStuff,screenSize,modalStuff,
     )
 }
 
-const QuizSlider=({quizSliderStuff,currIndStuff,nbSlidesStuff,counterStuff})=>{
+const QuizSlider=({quizSlidesRef,currIndStuff,nbSlidesStuff,counterStuff,quizStuff})=>{
+    // the array of quizes
+    const [quizes,setQuizes]=quizStuff;
+
     const [nbSlides,setNbSlides]=nbSlidesStuff; // the number of slides in the quiz
-    const [quizSlides,setQuizSlides]=quizSliderStuff; // the array of slides
+    const quizSlides=quizSlidesRef; // the array that stores the questions
     const [currInd,setCurrInd]=currIndStuff; // the index of the current displayed slide
-    const [counter,setCounter]=counterStuff;
+    const [counter,setCounter]=counterStuff; // the counter for choices ( answers )
+    
+    const handleNewSlide=()=>{
+        setNbSlides(nbSlides+1);
+        setCounter([...counter,0]);
+        quizSlides.current.push({question:'',choices:[]});
+        
+    }
     
     
     
-    const NewQuiz=()=>{
+    
+    const NewSlide=()=>{
         return(
             <motion.div 
                 className='cq-nq-container center' 
                 role='button'
-                onClick={()=>{
-                    setQuizSlides([...quizSlides,{}]);
-                    setNbSlides(nbSlides+1);
-                    setCounter([...counter,0]);
-                }}
+                onClick={handleNewSlide}
                 initial={{opacity:0}}
                 animate={{opacity:1}}
                 exit={{opacity:0}}
@@ -166,6 +173,40 @@ const QuizSlider=({quizSliderStuff,currIndStuff,nbSlidesStuff,counterStuff})=>{
     }
 
     const QuizSlide=({currInd,counter})=>{
+        const [question,setQuestion]=useState(quizSlides.current[currInd].question);
+        const timeRef=useRef(null);
+        const choiceTimeRef=useRef(null);
+
+        /* for the choices */
+        
+        const choicesLen = quizSlides.current[currInd].choices.length;
+        if(choicesLen<counter[currInd]) quizSlides.current[currInd].choices.push('');
+        else if(choicesLen>counter[currInd]) quizSlides.current[currInd].choices.pop();
+        const [choicesArr,setChoicesArr]=useState(quizSlides.current[currInd].choices);
+
+        const handleChoice=(e,ind)=>{
+            setChoicesArr(choicesArr.map((choice,i)=>(
+                i===ind? e.target.value:choice
+            )))
+            if(choiceTimeRef.current) clearTimeout(choiceTimeRef.current);
+
+            choiceTimeRef.current=setTimeout(()=>{
+                quizSlides.current[currInd].choices[ind]=e.target.value;
+                choiceTimeRef.current=null;
+            },200)
+        }
+
+        
+        const handleQuestion=(e)=>{
+            setQuestion(e.target.value);
+            if(timeRef.current) clearTimeout(timeRef.current);
+
+            timeRef.current=setTimeout(()=>{
+                quizSlides.current[currInd].question=e.target.value;
+                timeRef.current=null;
+            },200)
+        }
+        
         return(
             <motion.div 
                 className='cq-nq-slide'
@@ -175,16 +216,22 @@ const QuizSlider=({quizSliderStuff,currIndStuff,nbSlidesStuff,counterStuff})=>{
 
             >
                 <div className='cq-nq-slide-question'>
-                    <input 
+                    <textarea
                         type="text"
                         className='cq-nq-slide-question-input'
+                        onChange={(e)=>handleQuestion(e)}
+                        value={question}
                         required
                     />
                     <div className='cq-nq-slide-choices-container'>
                         <ul className='cq-nq-slide-choices-list'>
-                            {Array(counter[currInd]).fill(0).map(item=>(
-                                <li className='cq-nq-choice'>
-                                    {item}
+                            {choicesArr.map((item,ind)=>(
+                                <li className='cq-nq-choice' key={`choiceNb${ind}`}>
+                                    <input type='text'
+                                        className='cq-nq-choice-input'
+                                        value={item}
+                                        onChange={(e)=>handleChoice(e,ind)}
+                                    />
                                 </li>
                             ))
 
@@ -192,11 +239,13 @@ const QuizSlider=({quizSliderStuff,currIndStuff,nbSlidesStuff,counterStuff})=>{
                         </ul>
                     </div>
                 </div>
-                {currInd===quizSlides.length-1 &&
+                {currInd===quizSlides.current.length-1 &&
                     <button className='cq-nq-finish-quiz'>
-                        Finish Quiz
+                        Save Quiz
                     </button>
                 }
+
+                {currInd}
 
             </motion.div>
         )
@@ -207,7 +256,7 @@ const QuizSlider=({quizSliderStuff,currIndStuff,nbSlidesStuff,counterStuff})=>{
                 className='cq-qs-next-slide center'
                 onClick={()=>{
                     setCurrInd(
-                        !(!quizSlides.length || currInd>=quizSlides.length)?
+                        !(!quizSlides.current.length || currInd>=quizSlides.current.length)?
                         currInd+1:currInd
                     );
                 }}
@@ -219,10 +268,10 @@ const QuizSlider=({quizSliderStuff,currIndStuff,nbSlidesStuff,counterStuff})=>{
 
             <AnimatePresence mode='wait' initial={false}>
 
-                {(!quizSlides.length || currInd>=quizSlides.length)&&
-                    <NewQuiz key='newQuiz'/>
+                {(!quizSlides.current.length || currInd>=quizSlides.current.length)&&
+                    <NewSlide key='newSlide'/>
                 }            
-                {!(!quizSlides.length || currInd>=quizSlides.length) && 
+                {!(!quizSlides.current.length || currInd>=quizSlides.current.length) && 
                     <QuizSlide 
                         key={`quizSlide${currInd}`}
                         currInd={currInd}
@@ -281,7 +330,11 @@ export const TitleModal=({titleStuff,modalStuff,link})=>{
     )
 }
 
-const CreateQuiz=({blurStuff})=>{
+const CreateQuiz=({blurStuff,quizStuff})=>{
+
+    /* the array of quizes*/
+    const [quizes,setQuizes]=quizStuff;
+
     const [nbSlides,setNbSlides]=useState(0);
     const [counter,setCounter]=useState([]); // the number of slides for each question in the quiz
     const [topic,setTopic]=useState([
@@ -298,7 +351,7 @@ const CreateQuiz=({blurStuff})=>{
     const [quizTopic,setQuizTopic]=useState('MATH');
 
     /*state of the quiz creating area ( slides = questions )*/
-    const [quizSlides,setQuizSlides]=useState([]);
+    const quizSlides = useRef([]);
     const [currInd,setCurrInd]=useState(0);
 
     /* for adjucements on smaller screens the title input is replaced with a modal*/
@@ -338,11 +391,12 @@ const CreateQuiz=({blurStuff})=>{
             </header>
             <main className='cq-main center'>
                 <QuizSlider
-                    quizSliderStuff={[quizSlides,setQuizSlides]}
+                    quizSlidesRef={quizSlides}
                     currIndStuff={[currInd,setCurrInd]}
                     screenSize={[isMobile,setIsMobile]}
                     counterStuff={[counter,setCounter]}
                     nbSlidesStuff={[nbSlides,setNbSlides]}
+                    quizStuff={[quizes,setQuizes]}
                 />
 
                 <AnimatePresence>
