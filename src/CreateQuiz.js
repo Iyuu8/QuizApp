@@ -196,7 +196,6 @@ const QuizSlider=({quizSlidesRef,currIndStuff,nbSlidesStuff,counterStuff,quizStu
             },200)
         }
 
-        
         const handleQuestion=(e)=>{
             setQuestion(e.target.value);
             if(timeRef.current) clearTimeout(timeRef.current);
@@ -206,7 +205,6 @@ const QuizSlider=({quizSlidesRef,currIndStuff,nbSlidesStuff,counterStuff,quizStu
                 timeRef.current=null;
             },200)
         }
-        
         return(
             <motion.div 
                 className='cq-nq-slide'
@@ -224,9 +222,12 @@ const QuizSlider=({quizSlidesRef,currIndStuff,nbSlidesStuff,counterStuff,quizStu
                         required
                     />
                     <div className='cq-nq-slide-choices-container'>
-                        <ul className='cq-nq-slide-choices-list'>
+                        <ul 
+                            className='cq-nq-slide-choices-list' 
+                            style={{'--nb-items':counter[currInd]}}
+                        >
                             {choicesArr.map((item,ind)=>(
-                                <li className='cq-nq-choice' key={`choiceNb${ind}`}>
+                                <li className='cq-nq-choice center' key={`choiceNb${ind}`}>
                                     <input type='text'
                                         className='cq-nq-choice-input'
                                         value={item}
@@ -245,7 +246,7 @@ const QuizSlider=({quizSlidesRef,currIndStuff,nbSlidesStuff,counterStuff,quizStu
                     </button>
                 }
 
-                {currInd}
+                <h2 className="cq-nq-slide-ind">{currInd}</h2>
 
             </motion.div>
         )

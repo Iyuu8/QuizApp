@@ -2,6 +2,9 @@
     /*vars for the CreateQuize Page*/
 
     --cq-nq-border-color:2px dashed #ceb6ff;
+    --cq-nq-slide-question:#ceb6ff;
+    --cq-nq-slide-choice-background:rgba(240, 248, 255, 0.247);
+    --cq-nq-slide-choice-color:rgb(203, 91, 255);
     --cq-nq-bkg-color:rgba(210, 142, 255, 0.199);
     --cq-nq-icon-color:rgb(242, 196, 255);
     --cq-nq-bkg-color-hover:rgba(210, 142, 255, 0.278);
@@ -9,6 +12,7 @@
     --cq-qs-control-color:rgb(205, 129, 248);
     --cq-qs-control-bkg-color:rgba(199, 147, 252, 0.089);
     --cq-qs-control-bkg-color-hover:rgba(173, 102, 244, 0.131);
+
 
 }
 
@@ -213,6 +217,68 @@
     transform: translateX(var(--dir,0.2rem));
 }
 
+/* styling for QuizSlide ( question page ) */
+.cq-nq-slide{
+    display: flex;
+    flex-flow: column nowrap;
+    height: 100%;
+    width: 100%;
+    position: relative;
+}
+.cq-nq-slide-question{
+    flex-grow: 1;
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    width: 100%;
+    gap: 1rem;
+}
+.cq-nq-slide-question-input{
+    border: none;
+    background-color: var(--cq-nq-slide-question);
+    outline: none;
+    width: 95%;
+    color: var(--text-color);
+    font-family: "Pixelify Sans", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+    padding: 0.5rem 1rem;
+    font-size: 2.5ch;
+    resize: none;
+    height: min(40vh,12rem);
+    border-radius: 0.8rem;
+}
+.cq-nq-slide-choices-container{height: calc(100% - min(40vh,12rem));width: 100%;}
+.cq-nq-slide-choices-list{
+    height: 100%;
+    display: flex;
+    flex-flow: column nowrap;
+    gap: 1.5rem;
+    align-items: center;
+    width: 100%;
+}
+.cq-nq-choice{
+    width: 80%;
+    height: min(calc(100% / var(--nb-items)),5rem);
+    background-color: var(--player);
+    border-radius: 0.5rem;
+}
+.cq-nq-choice-input{
+    width: 95%;
+    height: 80%;
+    border: none;
+    outline: none;
+    background-color: var(--cq-nq-slide-choice-background);
+    border-radius: 0.5rem;
+    color: var(--cq-nq-slide-choice-color);
+    font-family: "Pixelify Sans", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+    font-size: 2.5ch;
+    padding-left: 1rem;
+
+}
+
 /* styling fot the modal to change the title on mobile*/
 
 .cq-change-title-modal{
@@ -254,7 +320,6 @@
     font-size: 1.8ch;
     border-radius: 0.2rem;
 }
-
 .cq-modal-exit{
     position: absolute;
     top: 0.2rem;
