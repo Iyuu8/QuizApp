@@ -238,6 +238,7 @@
     gap: 1rem;
 }
 .cq-nq-slide-question-input-container{
+    position: relative;
     width: 95%;
     background-color: var(--cq-nq-slide-question-container);
     height: min(40vh,12rem);
@@ -305,11 +306,16 @@
     color: var(--text-color);
 }
 .cq-nq-slide-ind{
-    top: 0;
-    left: 0.1rem;
+    top: -2px;
+    left: 0;
+    background-color: var(--quiz-maker);
+    color: var(--text-color);
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 50%;
+    transform: translateX(-50%) translateY(-50%);
     position: absolute;
     z-index: 3;
-    color: var(--quiz-maker);
     font-family: "Pixelify Sans", sans-serif;
     font-optical-sizing: auto;
     font-style: normal;

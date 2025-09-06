@@ -240,6 +240,7 @@ const QuizSlider=({quizSlidesRef,currIndStuff,nbSlidesStuff,counterStuff,quizStu
             >
                 <div className='cq-nq-slide-question'>
                     <div className='cq-nq-slide-question-input-container center'>
+                        <h2 className="cq-nq-slide-ind center">{currInd}</h2>
                         <textarea
                             type="text"
                             className='cq-nq-slide-question-input'
@@ -278,7 +279,6 @@ const QuizSlider=({quizSlidesRef,currIndStuff,nbSlidesStuff,counterStuff,quizStu
                     </button>
                 }
 
-                <h2 className="cq-nq-slide-ind">{currInd}</h2>
 
             </motion.div>
         )
