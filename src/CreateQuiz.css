@@ -2,9 +2,12 @@
     /*vars for the CreateQuize Page*/
 
     --cq-nq-border-color:2px dashed #ceb6ff;
-    --cq-nq-slide-question:#ceb6ff;
+
+    --cq-nq-slide-question-container:#ceb6ff;
+    --cq-nq-slide-question:#5c00ad3a;
     --cq-nq-slide-choice-background:rgba(240, 248, 255, 0.247);
     --cq-nq-slide-choice-color:rgb(203, 91, 255);
+
     --cq-nq-bkg-color:rgba(210, 142, 255, 0.199);
     --cq-nq-icon-color:rgb(242, 196, 255);
     --cq-nq-bkg-color-hover:rgba(210, 142, 255, 0.278);
@@ -224,6 +227,7 @@
     height: 100%;
     width: 100%;
     position: relative;
+    gap: 1rem;
 }
 .cq-nq-slide-question{
     flex-grow: 1;
@@ -233,11 +237,19 @@
     width: 100%;
     gap: 1rem;
 }
+.cq-nq-slide-question-input-container{
+    width: 95%;
+    background-color: var(--cq-nq-slide-question-container);
+    height: min(40vh,12rem);
+    border-radius: 0.8rem;
+    padding: 1rem;
+}
 .cq-nq-slide-question-input{
     border: none;
-    background-color: var(--cq-nq-slide-question);
     outline: none;
-    width: 95%;
+    width: 100%;
+    height: 100%;
+    background-color: var(--cq-nq-slide-question);
     color: var(--text-color);
     font-family: "Pixelify Sans", sans-serif;
     font-optical-sizing: auto;
@@ -245,7 +257,7 @@
     padding: 0.5rem 1rem;
     font-size: 2.5ch;
     resize: none;
-    height: min(40vh,12rem);
+    
     border-radius: 0.8rem;
 }
 .cq-nq-slide-choices-container{height: calc(100% - min(40vh,12rem));width: 100%;}
@@ -262,6 +274,7 @@
     height: min(calc(100% / var(--nb-items)),5rem);
     background-color: var(--player);
     border-radius: 0.5rem;
+    position: relative;
 }
 .cq-nq-choice-input{
     width: 95%;
@@ -277,6 +290,45 @@
     font-size: 2.5ch;
     padding-left: 1rem;
 
+}
+.cq-nq-value-choice{
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: translateX(-60%) translateY(-60%);
+    border: 1px solid var(--quiz-maker);
+    border-radius: 50%;
+    width: 1.2rem; 
+    height: 1.2rem;
+    font-size: 1rem;
+    background-color: var(--cq-nq-slide-choice-color);
+    color: var(--text-color);
+}
+.cq-nq-slide-ind{
+    top: 0;
+    left: 0.1rem;
+    position: absolute;
+    z-index: 3;
+    color: var(--quiz-maker);
+    font-family: "Pixelify Sans", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+}
+.cq-nq-finish-quiz{
+    width: 90%;
+    border: none;
+    background-color: var(--quiz-maker);
+    padding: 0.5rem;
+    font-size: x-large;
+    border-radius: 0.8rem;
+    color: var(--text-color);
+    font-family: "Pixelify Sans", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+    transition: all 0.2s ease;
+}
+.cq-nq-finish-quiz:hover{
+    transform: scaleY(1.02) scaleX(1.1);
 }
 
 /* styling fot the modal to change the title on mobile*/

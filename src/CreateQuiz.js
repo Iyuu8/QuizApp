@@ -134,7 +134,7 @@ const QuizControls=({topicStuff,titleStuff,quizTopicStuff,screenSize,modalStuff,
     )
 }
 
-const QuizSlider=({quizSlidesRef,currIndStuff,nbSlidesStuff,counterStuff,quizStuff})=>{
+const QuizSlider=({quizSlidesRef,currIndStuff,nbSlidesStuff,counterStuff,quizStuff,isCheckedRef})=>{
     // the array of quizes
     const [quizes,setQuizes]=quizStuff;
 
@@ -143,15 +143,14 @@ const QuizSlider=({quizSlidesRef,currIndStuff,nbSlidesStuff,counterStuff,quizStu
     const [currInd,setCurrInd]=currIndStuff; // the index of the current displayed slide
     const [counter,setCounter]=counterStuff; // the counter for choices ( answers )
     
+    
     const handleNewSlide=()=>{
         setNbSlides(nbSlides+1);
         setCounter([...counter,0]);
         quizSlides.current.push({question:'',choices:[]});
+        isCheckedRef.current.push(0);
         
     }
-    
-    
-    
     
     const NewSlide=()=>{
         return(
@@ -180,20 +179,45 @@ const QuizSlider=({quizSlidesRef,currIndStuff,nbSlidesStuff,counterStuff,quizStu
         /* for the choices */
         
         const choicesLen = quizSlides.current[currInd].choices.length;
-        if(choicesLen<counter[currInd]) quizSlides.current[currInd].choices.push('');
-        else if(choicesLen>counter[currInd]) quizSlides.current[currInd].choices.pop();
+
+        if(choicesLen<counter[currInd]) {
+            quizSlides.current[currInd].choices.push({choice:'',correct:false});
+        }
+        else if(choicesLen>counter[currInd]) {
+            const temp=quizSlides.current[currInd].choices.pop();
+            if(temp.correct){
+                isCheckedRef.current[currInd]=0;
+                
+            }
+        }
+        if(quizSlides.current[currInd].choices[0]){
+            quizSlides.current[currInd].choices[isCheckedRef.current[currInd]].correct=true;
+
+        }
+        
+
         const [choicesArr,setChoicesArr]=useState(quizSlides.current[currInd].choices);
 
         const handleChoice=(e,ind)=>{
             setChoicesArr(choicesArr.map((choice,i)=>(
-                i===ind? e.target.value:choice
+                i===ind? {choice:e.target.value,correct:choice.correct}:choice
             )))
             if(choiceTimeRef.current) clearTimeout(choiceTimeRef.current);
 
             choiceTimeRef.current=setTimeout(()=>{
-                quizSlides.current[currInd].choices[ind]=e.target.value;
+                quizSlides.current[currInd].choices[ind].choice=e.target.value;
                 choiceTimeRef.current=null;
-            },200)
+            },200);
+        }
+
+        const handleChekcedChoice=(ind,currInd)=>{
+            isCheckedRef.current[currInd]=ind;
+            quizSlides.current[currInd].choices.forEach(
+                (item,i) => (i===ind? item.correct=true:item.correct=false) 
+            );
+            setChoicesArr(choicesArr.map((choice,i)=>(
+                {...choice,correct:i===ind? true:false}
+            )));
         }
 
         const handleQuestion=(e)=>{
@@ -207,20 +231,23 @@ const QuizSlider=({quizSlidesRef,currIndStuff,nbSlidesStuff,counterStuff,quizStu
         }
         return(
             <motion.div 
-                className='cq-nq-slide'
-                initial={{opacity:0}}
+                className='cq-nq-slide center'
+                initial={false}
                 animate={{opacity:1}}
                 exit={{opacity:0}}
+                transition={{duration:0.3}}
 
             >
                 <div className='cq-nq-slide-question'>
-                    <textarea
-                        type="text"
-                        className='cq-nq-slide-question-input'
-                        onChange={(e)=>handleQuestion(e)}
-                        value={question}
-                        required
-                    />
+                    <div className='cq-nq-slide-question-input-container center'>
+                        <textarea
+                            type="text"
+                            className='cq-nq-slide-question-input'
+                            onChange={(e)=>handleQuestion(e)}
+                            value={question}
+                            required
+                        />
+                    </div>
                     <div className='cq-nq-slide-choices-container'>
                         <ul 
                             className='cq-nq-slide-choices-list' 
@@ -230,13 +257,18 @@ const QuizSlider=({quizSlidesRef,currIndStuff,nbSlidesStuff,counterStuff,quizStu
                                 <li className='cq-nq-choice center' key={`choiceNb${ind}`}>
                                     <input type='text'
                                         className='cq-nq-choice-input'
-                                        value={item}
+                                        value={item.choice}
                                         onChange={(e)=>handleChoice(e,ind)}
                                     />
+                                    <button 
+                                        className='cq-nq-value-choice center'
+                                        onClick={()=>handleChekcedChoice(ind,currInd)}
+                                    >
+                                        {item.correct? <FaCheck/>:<FaXmark/>}
+                                    </button>
+                                    
                                 </li>
-                            ))
-
-                            }
+                            ))}
                         </ul>
                     </div>
                 </div>
@@ -375,6 +407,9 @@ const CreateQuiz=({blurStuff,quizStuff})=>{
         setIsblur(openModal);
     },[openModal])
 
+    // to choose the correct answer in each slide
+    const isCheckedRef=useRef([]);
+
     return(
         <>
             <header className='cq-header'>
@@ -398,6 +433,7 @@ const CreateQuiz=({blurStuff,quizStuff})=>{
                     counterStuff={[counter,setCounter]}
                     nbSlidesStuff={[nbSlides,setNbSlides]}
                     quizStuff={[quizes,setQuizes]}
+                    isCheckedRef={isCheckedRef}
                 />
 
                 <AnimatePresence>
