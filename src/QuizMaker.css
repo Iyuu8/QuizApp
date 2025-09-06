@@ -231,6 +231,11 @@
     height: 100%;
     cursor: pointer;
 }
+.qm-link-quiz-item{
+    padding-top: 0.5rem;
+    font-size: 2ch;
+    text-align: center;
+}
 .qm-quiz-topic-container{
     width: 100%;
     height: 100%;
@@ -246,6 +251,13 @@
     border-radius: 0.6rem;
 }
 .qm-quiz-title{position: relative;z-index: 1;}
+.qm-quiz-item-topic{
+    color: var(--text-color);
+    font-family: "Pixelify Sans", sans-serif;font-optical-sizing: auto;font-style: normal;
+    text-align: center;
+    width: 100%;
+    padding: 0 0.3rem;
+}
 
 
 

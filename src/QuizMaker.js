@@ -2,9 +2,12 @@ import {AnimatePresence, motion} from 'framer-motion';
 import { FaCaretDown, FaCaretLeft, FaCaretRight, FaCheck, FaPlus } from 'react-icons/fa';
 import { FaXmark } from 'react-icons/fa6';
 import { useRef,useState,useEffect } from 'react';
-import {Link,Routes,Route} from 'react-router-dom';
+import {Link,Routes,Route,useNavigate} from 'react-router-dom';
 import { TitleModal } from './CreateQuiz';
-const QuizFilters =({filterStuff})=>{
+import useAxiosFetch from './Hooks/useAxiosFetch';
+const QuizFilters =({filterStuff,quizesStuff,filteredQuizesStuff})=>{
+    const [quizes,setQuizes]=quizesStuff; // all quizes from the api
+    const [filteredQuizes,setFilteredQuizes]=filteredQuizesStuff; // quizes after filtering
     const [filters,setFilters]=filterStuff;
     const [openFilters,setOpenFilter]=useState(false);
     const handleFilter=(filter)=>{
@@ -16,7 +19,15 @@ const QuizFilters =({filterStuff})=>{
             ))
         )
     }
+    //
     
+    useEffect(()=>{
+        const temp = quizes.filter(quiz => (
+            filters.some(filter => filter.checked && filter.topic === quiz.topic)
+        ));
+        setFilteredQuizes(temp);
+    },[filters.filter(item=>item.checked).length])
+
     // drop down handling
     const dropdownRef=useRef();
     const filterButtonRef=useRef();
@@ -138,8 +149,10 @@ const QuizFilters =({filterStuff})=>{
         </>
     )
 }
-const Quizes=({modalStuff})=>{
+const Quizes=({modalStuff,quizesStuff,filteredQuizesStuff})=>{
     const [openModal,setOpenModal]=modalStuff;
+    const [quizes,setQuizes]=quizesStuff; // array of quizes from the api
+    const [filteredQuizes,setFilteredQuizes]=filteredQuizesStuff;
     const handleNewQuiz=()=>{
         setOpenModal(true);
     }
@@ -147,12 +160,11 @@ const Quizes=({modalStuff})=>{
         const [showTopic,setShowTopic]=useState(false);
         return(
             <li 
-                className='qm-quiz-item'
+                className='qm-quiz-item center'
                 onMouseEnter={()=>setShowTopic(true)}
                 onMouseLeave={()=>setShowTopic(false)}
             >
-                <Link to='/' className='qm-link-quiz-item center'>
-                <h2 className='qm-quiz-title'>{title}</h2>
+                <h2 className='qm-link-quiz-item'>{title}</h2>
                 <AnimatePresence>
                 {showTopic &&
                     <motion.div 
@@ -161,10 +173,9 @@ const Quizes=({modalStuff})=>{
                         animate={{opacity:1,height:'100%'}}
                         exit={{opacity:0,height:'20%'}}
 
-                    ><h2>{topic}</h2></motion.div>
+                    ><h2 className='qm-quiz-item-topic'>{topic}</h2></motion.div>
                 }
                 </AnimatePresence>
-                </Link>
             </li>
         )
     }
@@ -184,12 +195,33 @@ const Quizes=({modalStuff})=>{
     return(
         <div className='qm-quiz-container'>
             <ul className='qm-quiz-list'>
+                {filteredQuizes && filteredQuizes.map((quiz,ind)=>(
+                    <QuizItem 
+                        key={quiz.title+ind}
+                        title={quiz.title}
+                        topic={quiz.topic}
+                    />
+                ))}
                 <AddQuiz/>
             </ul>
         </div>
     )
 }
 const QuizMaker=({blurStuff})=>{
+    const navigate=useNavigate();
+    /* the api request to get the quizes*/
+    const {data,error,loading}=useAxiosFetch('quizes');
+    const [quizes,setQuizes]=useState([]);
+    const [filteredQuizes,setFilteredQuizes]=useState([]); // quizes after filtering
+
+    useEffect(() => {
+        if (!error && !loading && data) {
+            setQuizes(data);
+            setFilteredQuizes(data);
+        }
+        if (error) navigate('/FetchError');
+    }, [data, error, loading, navigate]);
+
     const [filters,setFilters]=useState([
         {topic:'MATH',color:'var(--math)',checked:true},
         {topic:'SCIENCE',color:'var(--science)',checked:true},
@@ -206,10 +238,18 @@ const QuizMaker=({blurStuff})=>{
     return(
         <>
             <header className='qm-header'>
-                <QuizFilters filterStuff={[filters,setFilters]}/>    
+                <QuizFilters 
+                    filterStuff={[filters,setFilters]} 
+                    quizesStuff={[quizes,setQuizes]}
+                    filteredQuizesStuff={[filteredQuizes,setFilteredQuizes]}
+                />    
             </header>
             <main className='qm-quizes'>
-                <Quizes modalStuff={[openModal,setOpenModal]}/>
+                <Quizes 
+                    modalStuff={[openModal,setOpenModal]} 
+                    quizesStuff={[quizes,setQuizes]}
+                    filteredQuizesStuff={[filteredQuizes,setFilteredQuizes]}
+                />
 
                 <AnimatePresence>
                 {openModal&&

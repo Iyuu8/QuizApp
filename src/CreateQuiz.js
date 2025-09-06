@@ -88,7 +88,7 @@ const QuizControls=({topicStuff,titleStuff,quizTopicStuff,screenSize,modalStuff,
 
             </div>
             <div className='cq-counter'>
-                <h2>choices: {(counter.length!==0 && currInd<counter.length)? counter[currInd]:0}</h2>
+                <h2>choices: {(counter.length!==0 && currInd<counter.length)? counter[currInd]:1}</h2>
                 <div className='cq-counter-contols'>
                     <div 
                         role='button' 
@@ -105,7 +105,7 @@ const QuizControls=({topicStuff,titleStuff,quizTopicStuff,screenSize,modalStuff,
                         className='cq-counter-down'
                         onClick={()=>setCounter(
                             counter.map((item,ind)=>(
-                                (ind===currInd && item>0)?
+                                (ind===currInd && item>1)?
                                 item-1:item
                             )
                         ))}
@@ -134,22 +134,41 @@ const QuizControls=({topicStuff,titleStuff,quizTopicStuff,screenSize,modalStuff,
     )
 }
 
-const QuizSlider=({quizSlidesRef,currIndStuff,nbSlidesStuff,counterStuff,quizStuff,isCheckedRef})=>{
-    // the array of quizes
-    const [quizes,setQuizes]=quizStuff;
+const QuizSlider=({quizSlidesRef,currIndStuff,nbSlidesStuff,counterStuff,quizesStuff,isCheckedRef,quizTopicStuff,titleStuff})=>{
+
+    const navigate=useNavigate();
+    const [quizes,setQuizes]=quizesStuff; // the array of quizes
 
     const [nbSlides,setNbSlides]=nbSlidesStuff; // the number of slides in the quiz
     const quizSlides=quizSlidesRef; // the array that stores the questions
     const [currInd,setCurrInd]=currIndStuff; // the index of the current displayed slide
     const [counter,setCounter]=counterStuff; // the counter for choices ( answers )
-    
-    
+    const [quizTopic,setQuizTopic]=quizTopicStuff; // the topic of the quiz
+    const [quizTitle,setQuizTitle]=titleStuff; // the title of the quiz
+
     const handleNewSlide=()=>{
         setNbSlides(nbSlides+1);
-        setCounter([...counter,0]);
+        setCounter([...counter,1]);
         quizSlides.current.push({question:'',choices:[]});
         isCheckedRef.current.push(0);
         
+    }
+
+    const validateSaveQuiz=()=>{
+        for(let ind=0; ind<quizSlides.current.length; ind++){
+            const slide = quizSlides.current[ind];
+            if(!slide.question || slide.choices.length<2){
+                window.alert(`Please fill the question and at least two choices for slide ${ind+1}`);
+                return false;
+            }
+            for(let cInd=0; cInd<slide.choices.length; cInd++){
+                if(!slide.choices[cInd].choice){
+                    window.alert(`Please fill the choice ${cInd+1} for slide ${ind+1}`);
+                    return false;
+                }
+            }
+        }
+        return true;
     }
     
     const NewSlide=()=>{
@@ -240,7 +259,7 @@ const QuizSlider=({quizSlidesRef,currIndStuff,nbSlidesStuff,counterStuff,quizStu
             >
                 <div className='cq-nq-slide-question'>
                     <div className='cq-nq-slide-question-input-container center'>
-                        <h2 className="cq-nq-slide-ind center">{currInd}</h2>
+                        <h2 className="cq-nq-slide-ind center">{currInd+1}</h2>
                         <textarea
                             type="text"
                             className='cq-nq-slide-question-input'
@@ -274,7 +293,19 @@ const QuizSlider=({quizSlidesRef,currIndStuff,nbSlidesStuff,counterStuff,quizStu
                     </div>
                 </div>
                 {currInd===quizSlides.current.length-1 &&
-                    <button className='cq-nq-finish-quiz'>
+                    <button 
+                        className='cq-nq-finish-quiz'
+                        onClick={()=>{
+                            if(validateSaveQuiz()){
+                                setQuizes([...quizes,{
+                                    title: quizTitle,
+                                    slides: quizSlides.current,
+                                    topic: quizTopic
+                                }]);
+                                navigate('/QuizMaker');
+                            }
+                        }}
+                    >
                         Save Quiz
                     </button>
                 }
@@ -363,13 +394,14 @@ export const TitleModal=({titleStuff,modalStuff,link})=>{
     )
 }
 
-const CreateQuiz=({blurStuff,quizStuff})=>{
+const CreateQuiz=({blurStuff,quizesStuff})=>{
 
     /* the array of quizes*/
-    const [quizes,setQuizes]=quizStuff;
+    const [quizes,setQuizes]=quizesStuff;
+
 
     const [nbSlides,setNbSlides]=useState(0);
-    const [counter,setCounter]=useState([]); // the number of slides for each question in the quiz
+    const [counter,setCounter]=useState([1]); // the number of slides for each question in the quiz
     const [topic,setTopic]=useState([
         {topic:'MATH',checked:true},
         {topic:'SCIENCE',checked:false},
@@ -432,8 +464,10 @@ const CreateQuiz=({blurStuff,quizStuff})=>{
                     screenSize={[isMobile,setIsMobile]}
                     counterStuff={[counter,setCounter]}
                     nbSlidesStuff={[nbSlides,setNbSlides]}
-                    quizStuff={[quizes,setQuizes]}
+                    quizesStuff={[quizes,setQuizes]}
                     isCheckedRef={isCheckedRef}
+                    quizTopicStuff={[quizTopic,setQuizTopic]}
+                    titleStuff={[title,setTitle]}
                 />
 
                 <AnimatePresence>
