@@ -1,32 +1,91 @@
 {
-    "quizes":[
+  "quizes": [
+    {
+      "title": "quizTitle",
+      "slides": [
         {
-            "title": "quizTitle",
-            "slides": [
-                {
-                    "question": "questionText",
-                    "choices": [
-                        {"choice": "answer1", "correct": false},
-                        {"choice": "answer2", "correct": true},
-                        {"choice": "answer3", "correct": false}
-                    ]
-                }
-            ],
-            "topic": "HISTORY"
+          "question": "questionText",
+          "choices": [
+            {
+              "choice": "answer1",
+              "correct": false
+            },
+            {
+              "choice": "answer2",
+              "correct": true
+            },
+            {
+              "choice": "answer3",
+              "correct": false
+            }
+          ]
+        }
+      ],
+      "topic": "HISTORY"
+    },
+    {
+      "title": "Another Quiz",
+      "slides": [
+        {
+          "question": "What is 2 + 2?",
+          "choices": [
+            {
+              "choice": "3",
+              "correct": false
+            },
+            {
+              "choice": "4",
+              "correct": true
+            },
+            {
+              "choice": "5",
+              "correct": false
+            }
+          ]
+        }
+      ],
+      "topic": "MATH"
+    },
+    {
+      "id": "9047",
+      "title": "newquiz",
+      "slides": [
+        {
+          "question": "question 1",
+          "choices": [
+            {
+              "choice": "wrong",
+              "correct": false
+            },
+            {
+              "choice": "correct",
+              "correct": true
+            },
+            {
+              "choice": "wrong",
+              "correct": false
+            }
+          ]
         },
         {
-            "title": "Another Quiz",
-            "slides": [
-                {
-                    "question": "What is 2 + 2?",
-                    "choices": [
-                        {"choice": "3", "correct": false},
-                        {"choice": "4", "correct": true},
-                        {"choice": "5", "correct": false}
-                    ]
-                }
-            ],
-            "topic": "MATH"
+          "question": "question 2",
+          "choices": [
+            {
+              "choice": "correct",
+              "correct": true
+            },
+            {
+              "choice": "wrong",
+              "correct": false
+            },
+            {
+              "choice": "wrong",
+              "correct": false
+            }
+          ]
         }
-    ]
+      ],
+      "topic": "MATH"
+    }
+  ]
 }

@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from 'react';
 import { FaCaretDown,FaCaretLeft,FaCaretRight,FaCaretUp, FaCheck, FaPlus } from 'react-icons/fa';
 import { FaXmark } from 'react-icons/fa6';
 import { useNavigate, useParams } from 'react-router-dom';
+import api from './api/QuizAxios';
 
 
 /* cq stands create quiz, nq stands for new quiz and qs stands for quiz slider*/
@@ -146,6 +147,7 @@ const QuizSlider=({quizSlidesRef,currIndStuff,nbSlidesStuff,counterStuff,quizesS
     const [quizTopic,setQuizTopic]=quizTopicStuff; // the topic of the quiz
     const [quizTitle,setQuizTitle]=titleStuff; // the title of the quiz
 
+    /* functions for handling slides and quiz submission */
     const handleNewSlide=()=>{
         setNbSlides(nbSlides+1);
         setCounter([...counter,1]);
@@ -170,7 +172,30 @@ const QuizSlider=({quizSlidesRef,currIndStuff,nbSlidesStuff,counterStuff,quizesS
         }
         return true;
     }
-    
+
+    const handleSaveQuiz= async ()=> { // change the alert with some warning notifications
+        if(validateSaveQuiz()){
+            try{
+                const response=await api.post('/quizes',{
+                    title: quizTitle,
+                    slides: quizSlides.current,
+                    topic: quizTopic
+                });
+                setQuizes([...quizes,response.data]);
+
+            }catch(err){
+                console.error(err.message);
+                if(err.response){
+                    console.error(err.response.data);
+                    console.error(err.response.status);
+                }
+            }
+
+            navigate('/QuizMaker');
+        }
+        return;
+    }
+    /* components */
     const NewSlide=()=>{
         return(
             <motion.div 
@@ -295,16 +320,7 @@ const QuizSlider=({quizSlidesRef,currIndStuff,nbSlidesStuff,counterStuff,quizesS
                 {currInd===quizSlides.current.length-1 &&
                     <button 
                         className='cq-nq-finish-quiz'
-                        onClick={()=>{
-                            if(validateSaveQuiz()){
-                                setQuizes([...quizes,{
-                                    title: quizTitle,
-                                    slides: quizSlides.current,
-                                    topic: quizTopic
-                                }]);
-                                navigate('/QuizMaker');
-                            }
-                        }}
+                        onClick={async ()=> await handleSaveQuiz()}
                     >
                         Save Quiz
                     </button>
