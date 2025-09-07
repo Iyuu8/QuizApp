@@ -1,6 +1,6 @@
 import {motion,AnimatePresence, color} from 'framer-motion';
 import { useState, useEffect, useRef } from 'react';
-import { FaCaretDown,FaCaretLeft,FaCaretRight,FaCaretUp, FaCheck, FaPlus, FaTrash } from 'react-icons/fa';
+import { FaCaretDown,FaCaretLeft,FaCaretRight,FaCaretUp, FaCheck, FaPlus, FaTrash, FaExclamationTriangle } from 'react-icons/fa';
 import { FaXmark } from 'react-icons/fa6';
 import { useNavigate, useParams } from 'react-router-dom';
 import api from './api/QuizAxios';
@@ -161,12 +161,24 @@ const QuizSlider=({quizSlidesRef,currIndStuff,nbSlidesStuff,counterStuff,quizesS
         for(let ind=0; ind<quizSlides.current.length; ind++){
             const slide = quizSlides.current[ind];
             if(!slide.question || slide.choices.length<2){
-                window.alert(`Please fill the question and at least two choices for slide ${ind+1}`);
+                setOpenToast({
+                    state:true,
+                    message:`Please fill the question and add at least 2 choices: slide ${ind+1}`,
+                    color:'var(--exit)',
+                    icon:<FaExclamationTriangle/>,
+                    duration:4
+                });
                 return false;
             }
             for(let cInd=0; cInd<slide.choices.length; cInd++){
                 if(!slide.choices[cInd].choice){
-                    window.alert(`Please fill the choice ${cInd+1} for slide ${ind+1}`);
+                    setOpenToast({
+                        state:true,
+                        message:`Please fill all the choices: slide ${ind+1}`,
+                        color:'var(--exit)',
+                        icon:<FaExclamationTriangle/>,
+                        duration:4
+                    });
                     return false;
                 }
             }
@@ -185,6 +197,13 @@ const QuizSlider=({quizSlidesRef,currIndStuff,nbSlidesStuff,counterStuff,quizesS
                 setQuizes([...quizes,response.data]);
 
             }catch(err){
+                setOpenToast({
+                    state:true,
+                    message:'Error saving the quiz',
+                    icon:<FaExclamationTriangle/>,
+                    color:'var(--exit)',
+                    duration:4
+                })
                 console.error(err.message);
                 if(err.response){
                     console.error(err.response.data);
