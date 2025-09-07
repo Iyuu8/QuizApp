@@ -20,9 +20,11 @@
   --text-color-dark:#424242;
   --blur-overlay-color:rgba(0, 0, 0, 0.299);
   --exit:rgb(255, 165, 165);
+  --success:rgb(110, 215, 110);
 }
 body,#root,.App{
   min-height: 100vh;
+  overflow: hidden;
 }
 .App{
   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
@@ -267,6 +269,31 @@ button{cursor: pointer;}
   background-color: var(--blur-overlay-color);
   backdrop-filter: blur(2px);
   z-index: 4;
+}
+
+/* for the toast box */
+.toast{
+  position: absolute;
+  top: 5rem;
+  right: 0;
+  display: flex;
+  height: 4rem;
+  padding: 0 1rem;
+  background-color: var(--toast-color);
+  border-radius:1rem 0.5rem 0.5rem 1rem ;
+  font-family: "Pixelify Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+  font-size: 2.5ch;
+  color: var(--text-color);
+  gap: 0.5rem;
+}
+.toast-icon{
+  height: 50%;
+  aspect-ratio: 1/1;
+  background-color: var(--text-color);
+  color: var(--toast-color);
+  border-radius: 50%;
 }
 
 

@@ -170,6 +170,7 @@
 .cq-main{
     flex-grow: 1;
     height: 100%;
+    overflow: hidden;
 }
 .cq-nq-container{
     width: 100%;
@@ -229,6 +230,25 @@
     position: relative;
     gap: 1rem;
 }
+.cq-nq-delete-slide{
+    width: 2rem;
+    aspect-ratio: 1/1;
+    position: absolute;
+    border: none;
+    border-radius: 0.2rem;
+    top: -23px;
+    right: -2px;
+    background-color: var(--exit);
+    font-size: 2.5ch;
+    color: var(--text-color);
+    z-index: 3;
+    transition: all 0.5s ease;
+    cursor: pointer;
+}
+.cq-nq-delete-slide:hover{
+    transform: scale(1.1);
+}
+
 .cq-nq-slide-question{
     flex-grow: 1;
     display: flex;

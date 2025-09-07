@@ -1,6 +1,6 @@
-import {motion,AnimatePresence} from 'framer-motion';
+import {motion,AnimatePresence, color} from 'framer-motion';
 import { useState, useEffect, useRef } from 'react';
-import { FaCaretDown,FaCaretLeft,FaCaretRight,FaCaretUp, FaCheck, FaPlus } from 'react-icons/fa';
+import { FaCaretDown,FaCaretLeft,FaCaretRight,FaCaretUp, FaCheck, FaPlus, FaTrash } from 'react-icons/fa';
 import { FaXmark } from 'react-icons/fa6';
 import { useNavigate, useParams } from 'react-router-dom';
 import api from './api/QuizAxios';
@@ -135,7 +135,7 @@ const QuizControls=({topicStuff,titleStuff,quizTopicStuff,screenSize,modalStuff,
     )
 }
 
-const QuizSlider=({quizSlidesRef,currIndStuff,nbSlidesStuff,counterStuff,quizesStuff,isCheckedRef,quizTopicStuff,titleStuff})=>{
+const QuizSlider=({quizSlidesRef,currIndStuff,nbSlidesStuff,counterStuff,quizesStuff,isCheckedRef,quizTopicStuff,titleStuff,openToastStuff})=>{
 
     const navigate=useNavigate();
     const [quizes,setQuizes]=quizesStuff; // the array of quizes
@@ -146,6 +146,7 @@ const QuizSlider=({quizSlidesRef,currIndStuff,nbSlidesStuff,counterStuff,quizesS
     const [counter,setCounter]=counterStuff; // the counter for choices ( answers )
     const [quizTopic,setQuizTopic]=quizTopicStuff; // the topic of the quiz
     const [quizTitle,setQuizTitle]=titleStuff; // the title of the quiz
+    const [openToast,setOpenToast]=openToastStuff; // the toast box state
 
     /* functions for handling slides and quiz submission */
     const handleNewSlide=()=>{
@@ -273,6 +274,23 @@ const QuizSlider=({quizSlidesRef,currIndStuff,nbSlidesStuff,counterStuff,quizesS
                 timeRef.current=null;
             },200)
         }
+
+        const handleDeleteSlide=(currInd)=>{
+            quizSlides.current.splice(currInd,1);
+            isCheckedRef.current.splice(currInd,1);
+            setCounter(counter.filter((item,ind)=>ind!==currInd));
+            setNbSlides(nbSlides-1);
+            if(currInd>=quizSlides.current.length && currInd>0){
+                setCurrInd(currInd-1);
+            }
+            setOpenToast({
+                state:true,
+                message:'Slide deleted successfully',
+                duration:4,
+                icon:<FaCheck/>,
+                color:'var(--success)'
+            });
+        }
         return(
             <motion.div 
                 className='cq-nq-slide center'
@@ -282,6 +300,10 @@ const QuizSlider=({quizSlidesRef,currIndStuff,nbSlidesStuff,counterStuff,quizesS
                 transition={{duration:0.3}}
 
             >
+                <button 
+                    className='cq-nq-delete-slide center'
+                    onClick={()=>handleDeleteSlide(currInd)}        
+                ><FaTrash/></button>
                 <div className='cq-nq-slide-question'>
                     <div className='cq-nq-slide-question-input-container center'>
                         <h2 className="cq-nq-slide-ind center">{currInd+1}</h2>
@@ -410,6 +432,32 @@ export const TitleModal=({titleStuff,modalStuff,link})=>{
     )
 }
 
+export const Toast=({openToastStuff})=>{
+    const [openToast,setOpenToast]=openToastStuff;
+    const {message,duration,icon,color}=openToast;
+    useEffect(()=>{
+        if(duration && duration>0){
+            const timer=setTimeout(()=>{
+                setOpenToast({...openToast,state:false});
+            },duration*1000);
+            return ()=>clearTimeout(timer);
+        }
+    },[duration]);
+    return(
+        <motion.div
+            className='toast center'
+            style={{'--toast-color':color? color:'var(--exit)'}}
+            initial={{x:'100%',opacity:0}}
+            animate={{x:'-5%',opacity:1}}
+            exit={{x:'100%',opacity:0}}
+            transition={{type:'spring',duration:duration}}
+        >
+            {icon && <span className='toast-icon center'>{icon}</span>}
+            <span className='toast-message'>{message}</span>
+        </motion.div>
+    )
+}
+
 const CreateQuiz=({blurStuff,quizesStuff})=>{
 
     /* the array of quizes*/
@@ -434,6 +482,8 @@ const CreateQuiz=({blurStuff,quizesStuff})=>{
     /*state of the quiz creating area ( slides = questions )*/
     const quizSlides = useRef([]);
     const [currInd,setCurrInd]=useState(0);
+
+    const [openToast,setOpenToast]=useState({state:false,message:'',duration:3,icon:null,color:null}); // for the toast box ( notify/warn )
 
     /* for adjucements on smaller screens the title input is replaced with a modal*/
     const [isMobile,setIsMobile]=useState(false);
@@ -484,6 +534,7 @@ const CreateQuiz=({blurStuff,quizesStuff})=>{
                     isCheckedRef={isCheckedRef}
                     quizTopicStuff={[quizTopic,setQuizTopic]}
                     titleStuff={[title,setTitle]}
+                    openToastStuff={[openToast,setOpenToast]}
                 />
 
                 <AnimatePresence>
@@ -494,6 +545,14 @@ const CreateQuiz=({blurStuff,quizesStuff})=>{
                         counter={counter}
                     />
                 }
+                </AnimatePresence>
+
+                <AnimatePresence>
+                    {openToast.state &&  
+                        <Toast
+                            openToastStuff={[openToast,setOpenToast]}
+                        />
+                    }
                 </AnimatePresence>
             </main>
             
