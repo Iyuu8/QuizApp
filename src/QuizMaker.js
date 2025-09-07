@@ -149,20 +149,30 @@ const QuizFilters =({filterStuff,quizesStuff,filteredQuizesStuff})=>{
         </>
     )
 }
-const Quizes=({modalStuff,quizesStuff,filteredQuizesStuff})=>{
+const Quizes=({modalStuff,quizesStuff,filteredQuizesStuff,modeStuff})=>{
+    const navigate=useNavigate();
     const [openModal,setOpenModal]=modalStuff;
+    const [mode,setMode]=modeStuff; // to set the mode create or edit
     const [quizes,setQuizes]=quizesStuff; // array of quizes from the api
     const [filteredQuizes,setFilteredQuizes]=filteredQuizesStuff;
+
     const handleNewQuiz=()=>{
+        setMode('create');
         setOpenModal(true);
     }
-    const QuizItem=({title,topic})=>{
+
+    const handleEditQuiz=(path)=>{
+        setMode('edit');
+        navigate(path);
+    }
+    const QuizItem=({title,topic,path})=>{
         const [showTopic,setShowTopic]=useState(false);
         return(
             <li 
                 className='qm-quiz-item center'
                 onMouseEnter={()=>setShowTopic(true)}
                 onMouseLeave={()=>setShowTopic(false)}
+                onClick={()=>handleEditQuiz(path)}
             >
                 <h2 className='qm-link-quiz-item'>{title}</h2>
                 <AnimatePresence>
@@ -185,9 +195,7 @@ const Quizes=({modalStuff,quizesStuff,filteredQuizesStuff})=>{
                 className='qm-add-quiz center'
                 onClick={handleNewQuiz}
             >
-                <h3 
-                    to='/QuizMaker'
-                    className='qm-link-quiz-add center'
+                <h3 className='qm-link-quiz-add center'
                 ><FaPlus/></h3>
             </li>
         )
@@ -200,6 +208,7 @@ const Quizes=({modalStuff,quizesStuff,filteredQuizesStuff})=>{
                         key={quiz.title+ind}
                         title={quiz.title}
                         topic={quiz.topic}
+                        path={`/CreateQuiz/edit:${quiz.quizPath}`}
                     />
                 ))}
                 <AddQuiz/>
@@ -207,7 +216,7 @@ const Quizes=({modalStuff,quizesStuff,filteredQuizesStuff})=>{
         </div>
     )
 }
-const QuizMaker=({blurStuff})=>{
+const QuizMaker=({blurStuff,modeStuff})=>{
     const navigate=useNavigate();
     /* the api request to get the quizes*/
     const {data,error,loading}=useAxiosFetch('quizes');
@@ -249,6 +258,8 @@ const QuizMaker=({blurStuff})=>{
                     modalStuff={[openModal,setOpenModal]} 
                     quizesStuff={[quizes,setQuizes]}
                     filteredQuizesStuff={[filteredQuizes,setFilteredQuizes]}
+                    modeStuff={modeStuff}
+
                 />
 
                 <AnimatePresence>

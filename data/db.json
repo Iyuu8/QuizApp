@@ -1,140 +1,42 @@
 {
   "quizes": [
     {
-      "title": "quizTitle",
-      "slides": [
-        {
-          "question": "questionText",
-          "choices": [
-            {
-              "choice": "answer1",
-              "correct": false
-            },
-            {
-              "choice": "answer2",
-              "correct": true
-            },
-            {
-              "choice": "answer3",
-              "correct": false
-            }
-          ]
-        }
-      ],
-      "topic": "HISTORY"
-    },
-    {
-      "title": "Another Quiz",
-      "slides": [
-        {
-          "question": "What is 2 + 2?",
-          "choices": [
-            {
-              "choice": "3",
-              "correct": false
-            },
-            {
-              "choice": "4",
-              "correct": true
-            },
-            {
-              "choice": "5",
-              "correct": false
-            }
-          ]
-        }
-      ],
-      "topic": "MATH"
-    },
-    {
-      "id": "9047",
       "title": "newquiz",
       "slides": [
         {
-          "question": "question 1",
+          "question": "how much is 2+2 in base 3",
           "choices": [
             {
-              "choice": "wrong",
+              "choice": "4",
               "correct": false
             },
             {
-              "choice": "correct",
+              "choice": "11",
               "correct": true
-            },
-            {
-              "choice": "wrong",
-              "correct": false
             }
           ]
         },
         {
-          "question": "question 2",
+          "question": "how much is 1010 ( written in binary ) in base 10",
           "choices": [
             {
-              "choice": "correct",
-              "correct": true
-            },
-            {
-              "choice": "wrong",
-              "correct": false
-            },
-            {
-              "choice": "wrong",
-              "correct": false
-            }
-          ]
-        }
-      ],
-      "topic": "MATH"
-    },
-    {
-      "id": "1ff2",
-      "title": "mama",
-      "slides": [
-        {
-          "question": "how much is 2+2 ?",
-          "choices": [
-            {
-              "choice": "1",
-              "correct": false
-            },
-            {
-              "choice": "4",
-              "correct": true
-            },
-            {
-              "choice": "3",
+              "choice": "5",
               "correct": false
             },
             {
               "choice": "10",
-              "correct": false
-            }
-          ]
-        },
-        {
-          "question": "how much is x if x^2-1=0",
-          "choices": [
-            {
-              "choice": "x=1 or x=-1",
               "correct": true
             },
             {
-              "choice": "infinity",
-              "correct": false
-            },
-            {
-              "choice": "x=0",
-              "correct": false
-            },
-            {
-              "choice": "x=2",
+              "choice": "8",
               "correct": false
             }
           ]
         }
       ],
-      "topic": "MATH"
+      "topic": "MATH",
+      "quizPath": "newquiz:Sun Sep 07 2025 15:51:59 GMT+0100 (British Summer Time)",
+      "id": "232e"
     }
   ]
 }

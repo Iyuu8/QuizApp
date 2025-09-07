@@ -135,11 +135,11 @@ const QuizControls=({topicStuff,titleStuff,quizTopicStuff,screenSize,modalStuff,
     )
 }
 
-const QuizSlider=({quizSlidesRef,currIndStuff,nbSlidesStuff,counterStuff,quizesStuff,isCheckedRef,quizTopicStuff,titleStuff,openToastStuff})=>{
-
+const QuizSlider=({quizSlidesRef,currIndStuff,nbSlidesStuff,counterStuff,quizesStuff,isCheckedRef,quizTopicStuff,titleStuff,openToastStuff,path,modeStuff,quizRef})=>{
     const navigate=useNavigate();
+    const [mode,setMode]=modeStuff;
     const [quizes,setQuizes]=quizesStuff; // the array of quizes
-
+    
     const [nbSlides,setNbSlides]=nbSlidesStuff; // the number of slides in the quiz
     const quizSlides=quizSlidesRef; // the array that stores the questions
     const [currInd,setCurrInd]=currIndStuff; // the index of the current displayed slide
@@ -148,6 +148,7 @@ const QuizSlider=({quizSlidesRef,currIndStuff,nbSlidesStuff,counterStuff,quizesS
     const [quizTitle,setQuizTitle]=titleStuff; // the title of the quiz
     const [openToast,setOpenToast]=openToastStuff; // the toast box state
 
+    
     /* functions for handling slides and quiz submission */
     const handleNewSlide=()=>{
         setNbSlides(nbSlides+1);
@@ -186,15 +187,28 @@ const QuizSlider=({quizSlidesRef,currIndStuff,nbSlidesStuff,counterStuff,quizesS
         return true;
     }
 
-    const handleSaveQuiz= async ()=> { // change the alert with some warning notifications
+    const handleSaveQuiz= async (mode)=> { // change the alert with some warning notifications
         if(validateSaveQuiz()){
             try{
-                const response=await api.post('/quizes',{
-                    title: quizTitle,
-                    slides: quizSlides.current,
-                    topic: quizTopic
-                });
-                setQuizes([...quizes,response.data]);
+                if(mode==='create'){
+                    const response=await api.post('/quizes',{
+                        title: quizTitle,
+                        slides: quizSlides.current,
+                        topic: quizTopic,
+                        quizPath:path.slice(path.indexOf(":")+1)
+                    });
+                    setQuizes([...quizes,response.data]);
+
+                }else{
+                    const quizId=quizRef.current.id;
+                    const response = await api.put(`/quizes/${quizId}`,{
+                        title: quizTitle,
+                        slides: quizSlides.current,
+                        topic: quizTopic,
+                        quizPath:path.slice(path.indexOf(":")+1)
+                    })
+                    setQuizes(quizes.map(quiz=>quiz.quizPath===quizRef.current.quizPath? response.data:quiz) );
+                }
 
             }catch(err){
                 setOpenToast({
@@ -361,7 +375,7 @@ const QuizSlider=({quizSlidesRef,currIndStuff,nbSlidesStuff,counterStuff,quizesS
                 {currInd===quizSlides.current.length-1 &&
                     <button 
                         className='cq-nq-finish-quiz'
-                        onClick={async ()=> await handleSaveQuiz()}
+                        onClick={async ()=> await handleSaveQuiz(mode)}
                     >
                         Save Quiz
                     </button>
@@ -415,7 +429,7 @@ export const TitleModal=({titleStuff,modalStuff,link})=>{
         e.preventDefault();
         setOpenModal(false);
         const x=Date();
-        if (link) navigate(`${link}/${title}:${x}`);
+        if (link) navigate(`${link}/create:${title}:${x}`);
     }
     return(
         <motion.div 
@@ -477,12 +491,13 @@ export const Toast=({openToastStuff})=>{
     )
 }
 
-const CreateQuiz=({blurStuff,quizesStuff})=>{
+const CreateQuiz=({blurStuff,quizesStuff,modeStuff})=>{
+
+    const {id}=useParams();
 
     /* the array of quizes*/
-    const [quizes,setQuizes]=quizesStuff;
-
-
+    const [quizes,setQuizes]=quizesStuff;    
+    
     const [nbSlides,setNbSlides]=useState(0);
     const [counter,setCounter]=useState([1]); // the number of slides for each question in the quiz
     const [topic,setTopic]=useState([
@@ -494,8 +509,8 @@ const CreateQuiz=({blurStuff,quizesStuff})=>{
     ]);
 
     /*we get th title from the*/
-    const {id}=useParams();
-    const [title,setTitle]=useState(id.split(':')[0]);
+    
+    const [title,setTitle]=useState(id.split(':')[1]);
     const [quizTopic,setQuizTopic]=useState('MATH');
 
     /*state of the quiz creating area ( slides = questions )*/
@@ -527,6 +542,29 @@ const CreateQuiz=({blurStuff,quizesStuff})=>{
     // to choose the correct answer in each slide
     const isCheckedRef=useRef([]);
 
+    // when in edit mode we load the quiz data into the states
+
+    const [mode,setMode]=modeStuff;
+    useEffect(()=>{
+        setMode(id? id.split(':')[0]:null);
+
+    },[])
+    
+    const quizRef=useRef();
+    
+    useEffect(()=>{
+        quizRef.current = mode==='edit' ? quizes.find((quiz)=>quiz.quizPath===id.slice(id.indexOf(":")+1)) : null;
+        if(mode==='edit' && quizRef.current){
+            quizSlides.current=quizRef.current.slides;
+            setTitle(quizRef.current.title);
+            setQuizTopic(quizRef.current.topic);
+            setNbSlides(quizRef.current.slides.length);
+            setCounter(quizRef.current.slides.map((slide)=>slide.choices.length));
+            isCheckedRef.current=quizRef.current.slides.map(slide=>(
+                slide.choices.findIndex((choice)=>choice.correct)
+            ))
+        }
+    },[mode,quizes])
     return(
         <>
             <header className='cq-header'>
@@ -539,6 +577,7 @@ const CreateQuiz=({blurStuff,quizesStuff})=>{
                     modalStuff={[openModal,setOpenModal]}
                     counterStuff={[counter,setCounter]}
                     currIndStuff={[currInd,setCurrInd]}
+                    
 
                 />
             </header>
@@ -554,6 +593,10 @@ const CreateQuiz=({blurStuff,quizesStuff})=>{
                     quizTopicStuff={[quizTopic,setQuizTopic]}
                     titleStuff={[title,setTitle]}
                     openToastStuff={[openToast,setOpenToast]}
+                    modeStuff={[mode,setMode]}
+                    path={id}
+                    quizRef={quizRef}
+
                 />
 
                 <AnimatePresence>
