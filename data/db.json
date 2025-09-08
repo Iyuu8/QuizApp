@@ -1,42 +1,79 @@
 {
   "quizes": [
     {
-      "title": "newquiz",
+      "title": "get 100 dolars",
       "slides": [
         {
-          "question": "how much is 2+2 in base 3",
+          "question": "how old was the creator when he created this website",
           "choices": [
             {
-              "choice": "4",
+              "choice": "19",
               "correct": false
             },
             {
-              "choice": "11",
+              "choice": "18",
+              "correct": true
+            },
+            {
+              "choice": "20",
+              "correct": false
+            }
+          ]
+        },
+        {
+          "question": "how many days did it take for the creator to complete this section of the code ( quiz maker )",
+          "choices": [
+            {
+              "choice": "22 days",
+              "correct": false
+            },
+            {
+              "choice": "15 days",
+              "correct": false
+            },
+            {
+              "choice": "4 days",
+              "correct": false
+            },
+            {
+              "choice": "8 days",
+              "correct": false
+            },
+            {
+              "choice": "not even the creator knows",
               "correct": true
             }
           ]
         },
         {
-          "question": "how much is 1010 ( written in binary ) in base 10",
+          "question": "what is the passkey of the creators computer?",
           "choices": [
             {
-              "choice": "5",
+              "choice": "151515",
               "correct": false
             },
             {
-              "choice": "10",
+              "choice": "101413",
+              "correct": false
+            },
+            {
+              "choice": "112011",
+              "correct": false
+            },
+            {
+              "choice": "101011",
+              "correct": false
+            },
+            {
+              "choice": "the creator doesn't want you to know it",
               "correct": true
-            },
-            {
-              "choice": "8",
-              "correct": false
             }
           ]
         }
       ],
-      "topic": "MATH",
-      "quizPath": "newquiz:Sun Sep 07 2025 15:51:59 GMT+0100 (British Summer Time)",
-      "id": "232e"
+      "topic": "HISTORY",
+      "quizPath": "get 100 dolar:Mon Sep 08 2025 12:36:39 GMT+0100 (British Summer Time)",
+      "id": "1e8d"
     }
   ]
 }

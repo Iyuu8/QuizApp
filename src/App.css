@@ -296,7 +296,45 @@ button{cursor: pointer;}
   color: var(--toast-color);
   border-radius: 50%;
 }
-
+.confirm-box{
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 1rem;
+  height: max-content;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  background-color: var(--quiz-maker);
+  color: var(--text-color);
+  font-family: "Pixelify Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+  position: absolute;
+  left: 50%;
+  width:min(28rem,90%);
+  z-index: 5;
+}
+.confirm-message{
+  text-align: center;
+  font-size: 1.5rem;
+}
+.confirm-buttons-container{
+  display: flex;
+  width: 100%;
+  gap: 0.5rem;
+}
+.confirm-box-button{
+  flex-grow: 1;
+  border: none;
+  height: 2rem;
+  border-radius: none;
+  color: var(--text-color);
+  background-color: var(--player);
+  font-family: "Pixelify Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+  font-size: 1.5rem;
+  border-radius: 0.5rem;
+}
 
 /*prevent selecting images*/
 img {

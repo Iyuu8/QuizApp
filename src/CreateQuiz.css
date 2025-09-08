@@ -6,7 +6,7 @@
     --cq-nq-slide-question-container:#ceb6ff;
     --cq-nq-slide-question:#5c00ad3a;
     --cq-nq-slide-choice-background:rgba(240, 248, 255, 0.247);
-    --cq-nq-slide-choice-color:rgb(203, 91, 255);
+    --cq-nq-slide-choice-color:rgb(174, 71, 221);
 
     --cq-nq-bkg-color:rgba(210, 142, 255, 0.199);
     --cq-nq-icon-color:rgb(242, 196, 255);
@@ -340,8 +340,15 @@
     font-optical-sizing: auto;
     font-style: normal;
 }
+.cq-nq-save-delete-container{
+    display: flex;
+    gap: 0.5rem;
+    width: 95%;
+    align-items: center;
+    justify-content: center;
+}
 .cq-nq-finish-quiz{
-    width: 90%;
+    width: 50%;
     border: none;
     background-color: var(--quiz-maker);
     padding: 0.5rem;
@@ -353,9 +360,10 @@
     font-style: normal;
     transition: all 0.2s ease;
 }
-.cq-nq-finish-quiz:hover{
-    transform: scaleY(1.02) scaleX(1.1);
+.cq-nq-delete-quiz{
+    background-color: var(--player);
 }
+.cq-nq-finish-quiz:hover{width: 55%;}
 
 /* styling fot the modal to change the title on mobile*/
 

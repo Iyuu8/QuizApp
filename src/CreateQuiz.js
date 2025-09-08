@@ -4,6 +4,8 @@ import { FaCaretDown,FaCaretLeft,FaCaretRight,FaCaretUp, FaCheck, FaPlus, FaTras
 import { FaXmark } from 'react-icons/fa6';
 import { useNavigate, useParams } from 'react-router-dom';
 import api from './api/QuizAxios';
+import { type } from '@testing-library/user-event/dist/type';
+import useConfirmDialog from './Hooks/useConfirmDialog'
 
 
 /* cq stands create quiz, nq stands for new quiz and qs stands for quiz slider*/
@@ -135,7 +137,7 @@ const QuizControls=({topicStuff,titleStuff,quizTopicStuff,screenSize,modalStuff,
     )
 }
 
-const QuizSlider=({quizSlidesRef,currIndStuff,nbSlidesStuff,counterStuff,quizesStuff,isCheckedRef,quizTopicStuff,titleStuff,openToastStuff,path,modeStuff,quizRef})=>{
+const QuizSlider=({quizSlidesRef,currIndStuff,nbSlidesStuff,counterStuff,quizesStuff,isCheckedRef,quizTopicStuff,titleStuff,openToastStuff,path,modeStuff,quizRef,confirmBoxStuff})=>{
     const navigate=useNavigate();
     const [mode,setMode]=modeStuff;
     const [quizes,setQuizes]=quizesStuff; // the array of quizes
@@ -147,6 +149,7 @@ const QuizSlider=({quizSlidesRef,currIndStuff,nbSlidesStuff,counterStuff,quizesS
     const [quizTopic,setQuizTopic]=quizTopicStuff; // the topic of the quiz
     const [quizTitle,setQuizTitle]=titleStuff; // the title of the quiz
     const [openToast,setOpenToast]=openToastStuff; // the toast box state
+    const {confirmBoxObj,setConfirmBoxObj,confirmDialog}=confirmBoxStuff; // the confirm box state
 
     
     /* functions for handling slides and quiz submission */
@@ -209,6 +212,7 @@ const QuizSlider=({quizSlidesRef,currIndStuff,nbSlidesStuff,counterStuff,quizesS
                     })
                     setQuizes(quizes.map(quiz=>quiz.quizPath===quizRef.current.quizPath? response.data:quiz) );
                 }
+                navigate('/QuizMaker');
 
             }catch(err){
                 setOpenToast({
@@ -225,9 +229,45 @@ const QuizSlider=({quizSlidesRef,currIndStuff,nbSlidesStuff,counterStuff,quizesS
                 }
             }
 
-            navigate('/QuizMaker');
+            
         }
         return;
+    }
+
+    const handleDeleteQuiz=async (mode)=>{
+        const confirm = await confirmDialog("are you sure to delete this quiz?");
+        if(confirm){
+            if(mode==='create') navigate('/QuizMaker');
+            else{
+                try{
+                    const response=await api.delete(`/quizes/${quizRef.current.id}`);
+                    setQuizes(quizes.filter(quiz=>quiz.quizPath!==quizRef.current.quizPath));
+                    navigate('/QuizMaker');
+                }catch(err){
+                    setOpenToast({
+                        state:true,
+                        message:'Error deleting the quiz',
+                        icon:<FaExclamationTriangle/>,
+                        color:'var(--exit)',
+                        duration:4
+                    });
+                    console.error(err.message);
+                    if(err.response){
+                        console.error(err.response.data);
+                        console.error(err.response.status);
+                    }
+    
+                }
+            }
+        }else{
+            setOpenToast({
+                state:true,
+                message:'Quiz deletion cancelled',
+                icon:<FaCheck/>,
+                color:'var(--exit)',
+                duration:4
+            });
+        }
     }
     /* components */
     const NewSlide=()=>{
@@ -373,12 +413,20 @@ const QuizSlider=({quizSlidesRef,currIndStuff,nbSlidesStuff,counterStuff,quizesS
                     </div>
                 </div>
                 {currInd===quizSlides.current.length-1 &&
-                    <button 
-                        className='cq-nq-finish-quiz'
-                        onClick={async ()=> await handleSaveQuiz(mode)}
-                    >
-                        Save Quiz
-                    </button>
+                    <div className='cq-nq-save-delete-container center'>
+                        <button 
+                            className='cq-nq-finish-quiz'
+                            onClick={async ()=> await handleSaveQuiz(mode)}
+                        >
+                            Save Quiz
+                        </button>
+                        <button 
+                            className='cq-nq-delete-quiz cq-nq-finish-quiz'
+                            onClick={async ()=> await handleDeleteQuiz(mode)}
+                        >
+                            Delete Quiz
+                        </button>
+                    </div>
                 }
 
 
@@ -491,6 +539,38 @@ export const Toast=({openToastStuff})=>{
     )
 }
 
+export const ConfirmBox=({confirmBoxStuff})=>{
+    const [confirmBoxObj,setConfirmBoxObj]=confirmBoxStuff;
+    return(
+        <motion.div
+            className="confirm-box"
+            initial={{opacity:0,scale:0.8,x:'-50%',y:'-50%'}}
+            animate={{opacity:1,scale:1,x:'-50%',y:'-50%'}}
+            exit={{opacity:0,scale:0,x:'-50%',y:'-50%'}}
+            transition={{type:'spring',duration:0.6}}
+        >
+            <h3 className='confirm-message center'>{confirmBoxObj.message}</h3>
+            <div className='confirm-buttons-container'>
+                <button 
+                    className='confirm-box-button center'
+                    onClick={()=>{
+                        confirmBoxObj.resolve(true);
+                        setConfirmBoxObj({...confirmBoxObj,confirmState:true,state:false});
+                    }}
+                >Confirm</button>
+                <button 
+                    className='confirm-box-button center'
+                    style={{backgroundColor:'var(--exit)'}}
+                    onClick={()=>{
+                        confirmBoxObj.resolve(false);
+                        setConfirmBoxObj({...confirmBoxObj,confirmState:false,state:false});
+                    }}
+                >cancel</button>
+            </div>
+        </motion.div>
+    )
+}
+
 const CreateQuiz=({blurStuff,quizesStuff,modeStuff})=>{
 
     const {id}=useParams();
@@ -518,6 +598,7 @@ const CreateQuiz=({blurStuff,quizesStuff,modeStuff})=>{
     const [currInd,setCurrInd]=useState(0);
 
     const [openToast,setOpenToast]=useState({state:false,message:'',duration:3,icon:null,color:null}); // for the toast box ( notify/warn )
+    const {confirmBoxObj,setConfirmBoxObj, confirmDialog}=useConfirmDialog(); // for the confirm box ( delete quiz/slide )
 
     /* for adjucements on smaller screens the title input is replaced with a modal*/
     const [isMobile,setIsMobile]=useState(false);
@@ -536,11 +617,10 @@ const CreateQuiz=({blurStuff,quizesStuff,modeStuff})=>{
     /* to set the blur based on the whether the modal is mounted or not*/
     const [isBlur,setIsblur]=blurStuff;
     useEffect(()=>{
-        setIsblur(openModal);
-    },[openModal])
+        setIsblur(openModal || confirmBoxObj.state);
+    },[openModal,confirmBoxObj.state])
 
-    // to choose the correct answer in each slide
-    const isCheckedRef=useRef([]);
+    const isCheckedRef=useRef([]); // to choose the correct answer in each slide
 
     // when in edit mode we load the quiz data into the states
 
@@ -596,6 +676,7 @@ const CreateQuiz=({blurStuff,quizesStuff,modeStuff})=>{
                     modeStuff={[mode,setMode]}
                     path={id}
                     quizRef={quizRef}
+                    confirmBoxStuff={{confirmBoxObj,setConfirmBoxObj,confirmDialog}}
 
                 />
 
@@ -614,6 +695,12 @@ const CreateQuiz=({blurStuff,quizesStuff,modeStuff})=>{
                         <Toast
                             openToastStuff={[openToast,setOpenToast]}
                         />
+                    }
+                </AnimatePresence>
+
+                <AnimatePresence>
+                    {confirmBoxObj.state &&
+                        <ConfirmBox confirmBoxStuff={[confirmBoxObj,setConfirmBoxObj]}/>
                     }
                 </AnimatePresence>
             </main>
