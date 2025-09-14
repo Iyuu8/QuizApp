@@ -10,6 +10,7 @@ import QuizMakerBackground from "./QuizMakerBackground";
 import CreateQuiz from './CreateQuiz';
 import FetchError from './FetchError';
 import useAxiosFetch from './Hooks/useAxiosFetch';
+import Solve from './Solve';
 
 const HomePage = ()=>{
   return(
@@ -57,6 +58,35 @@ const CreateQuizPage=({blurStuff,quizesStuff,modeStuff})=>{
   )
 }
 
+const PlayerPage=({modeStuff})=>{
+  return (
+    <motion.div
+      initial={{opacity:0}}
+      animate={{opacity:1}}
+      exit={{opacity:0}}
+      transition={{ease:'easeOut'}}
+      className="player-page"
+    >
+      <QuizMakerBackground/>
+      <Player modeStuff={modeStuff}/>
+    </motion.div>
+  )
+}
+
+const SolvePage=({quizesStuff})=>{
+  return(
+    <motion.div
+      initial={{opacity:0}}
+      animate={{opacity:1}}
+      exit={{opacity:0}}
+      transition={{ease:'easeOut'}}
+      className="solve-page"
+    >
+      <Solve quizesStuff={quizesStuff}/>
+    </motion.div>
+  )
+}
+
 const Blur=()=>{
   return(
     <motion.div
@@ -98,7 +128,8 @@ function App() {
       <AnimatePresence exitBeforeEnter mode="wait" initial={false}>
       <Routes location={location} key={location.pathname}>
         <Route path="/" element={<HomePage />}/>
-        <Route path="player" element={<Player/>}/>
+        <Route path="player" element={<PlayerPage modeStuff={[mode,setMode]}/>}/>
+        <Route path="/SolveQuiz/:id" element={<SolvePage quizesStuff={[quizes,setQuizes]}/>}/>
         <Route path="/QuizMaker" element={<QuizMakerPage blurStuff={[isBlur,setIsblur]} modeStuff={[mode,setMode]}/>}/>
         <Route path="/CreateQuiz/:id" element={<CreateQuizPage blurStuff={[isBlur,setIsblur]} quizesStuff={[quizes,setQuizes]} modeStuff={[mode,setMode]}/>}/>
         <Route path="/FetchError" element={<FetchError/>}/>

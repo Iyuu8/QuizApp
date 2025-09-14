@@ -40,7 +40,7 @@
 
 
 /*the page itself*/
-.quiz-page{
+.quiz-page,.player-page{
     height: 100%;
     background: var(--qm-bkg);
     position: relative;

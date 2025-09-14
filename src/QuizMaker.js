@@ -5,7 +5,8 @@ import { useRef,useState,useEffect } from 'react';
 import {Link,Routes,Route,useNavigate} from 'react-router-dom';
 import { TitleModal } from './CreateQuiz';
 import useAxiosFetch from './Hooks/useAxiosFetch';
-const QuizFilters =({filterStuff,quizesStuff,filteredQuizesStuff})=>{
+
+export const QuizFilters =({filterStuff,quizesStuff,filteredQuizesStuff})=>{
     const [quizes,setQuizes]=quizesStuff; // all quizes from the api
     const [filteredQuizes,setFilteredQuizes]=filteredQuizesStuff; // quizes after filtering
     const [filters,setFilters]=filterStuff;
@@ -149,9 +150,10 @@ const QuizFilters =({filterStuff,quizesStuff,filteredQuizesStuff})=>{
         </>
     )
 }
-const Quizes=({modalStuff,quizesStuff,filteredQuizesStuff,modeStuff})=>{
+export const Quizes=({pageStuff,modalStuff,quizesStuff,filteredQuizesStuff,modeStuff})=>{
     const navigate=useNavigate();
-    const [openModal,setOpenModal]=modalStuff;
+    const [page,setPage]=pageStuff;
+    if(modalStuff) {var [openModal,setOpenModal]=modalStuff;}
     const [mode,setMode]=modeStuff; // to set the mode create or edit
     const [quizes,setQuizes]=quizesStuff; // array of quizes from the api
     const [filteredQuizes,setFilteredQuizes]=filteredQuizesStuff;
@@ -165,6 +167,10 @@ const Quizes=({modalStuff,quizesStuff,filteredQuizesStuff,modeStuff})=>{
         setMode('edit');
         navigate(path);
     }
+    const handleSolve =(path)=>{
+        setMode('solve');
+        navigate(path);
+    }
     const QuizItem=({title,topic,path})=>{
         const [showTopic,setShowTopic]=useState(false);
         return(
@@ -172,7 +178,10 @@ const Quizes=({modalStuff,quizesStuff,filteredQuizesStuff,modeStuff})=>{
                 className='qm-quiz-item center'
                 onMouseEnter={()=>setShowTopic(true)}
                 onMouseLeave={()=>setShowTopic(false)}
-                onClick={()=>handleEditQuiz(path)}
+                onClick={()=>{
+                    if(page==='QuizMaker') handleEditQuiz(path)
+                    else if(page==='Player') handleSolve(path);
+                }}
             >
                 <h2 className='qm-link-quiz-item'>{title}</h2>
                 <AnimatePresence>
@@ -193,7 +202,10 @@ const Quizes=({modalStuff,quizesStuff,filteredQuizesStuff,modeStuff})=>{
         return(
             <li 
                 className='qm-add-quiz center'
-                onClick={handleNewQuiz}
+                onClick={()=>{
+                    if(page==='QuizMaker') handleNewQuiz();
+                    else if(page==="Player") return;
+                }}
             >
                 <h3 className='qm-link-quiz-add center'
                 ><FaPlus/></h3>
@@ -208,10 +220,12 @@ const Quizes=({modalStuff,quizesStuff,filteredQuizesStuff,modeStuff})=>{
                         key={quiz.title+ind}
                         title={quiz.title}
                         topic={quiz.topic}
-                        path={`/CreateQuiz/edit:${quiz.quizPath}`}
+                        path={`/${page==="QuizMaker"? 'CreateQuiz':'SolveQuiz'}/${page==="QuizMaker"? 'edit':'solve'}:${quiz.quizPath}`}
                     />
                 ))}
-                <AddQuiz/>
+                {page==='QuizMaker' &&
+                    <AddQuiz/>
+                }
             </ul>
         </div>
     )
@@ -239,6 +253,7 @@ const QuizMaker=({blurStuff,modeStuff})=>{
         {topic:'HISTORY',color:'var(--history)',checked:true}
     ]);
     const [openModal,setOpenModal]=useState(false);
+    const [page,setPage]=useState('QuizMaker');
     const [title,setTitle]=useState('');
     const [isBlur,setIsblur]=blurStuff;
     useEffect(()=>{
@@ -255,6 +270,7 @@ const QuizMaker=({blurStuff,modeStuff})=>{
             </header>
             <main className='qm-quizes'>
                 <Quizes 
+                    pageStuff={[page,setPage]}
                     modalStuff={[openModal,setOpenModal]} 
                     quizesStuff={[quizes,setQuizes]}
                     filteredQuizesStuff={[filteredQuizes,setFilteredQuizes]}

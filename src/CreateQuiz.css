@@ -349,6 +349,7 @@
 }
 .cq-nq-finish-quiz{
     width: 50%;
+    height: 100%;
     border: none;
     background-color: var(--quiz-maker);
     padding: 0.5rem;
