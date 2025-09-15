@@ -1,26 +1,43 @@
 import{useState,useEffect,useRef} from 'react';
 import { useParams } from 'react-router-dom';
+const Pagination=({indStuff,pages})=>{
+  const [currInd,setCurrInd] = indStuff;
+  let start = Math.max(0,currInd-2);
+  let end = Math.min(currInd+3,pages.length);
+  const r=2-currInd;
+  const c=currInd+3-end;
+  if(r>0) end = Math.min(pages.length,end+r);
+  if(c>0) start = Math.max(0,start-c);
+  return (
+    <div className='pagination'>
+      {pages.slice(start,end).map((page,ind)=>{
+        const actualInd = start+ind;
+        return(
+          <button 
+            key={page}
+            onClick={()=> setCurrInd(actualInd)}
+          >{actualInd+1}</button>
+        )
+      })}
+      {end< pages.length -1&&
+        <>
+          <button>...</button>
+          <button onClick={()=>setCurrInd(pages.length-1)}>last</button>
+        </>
+      }
+    </div>
+  )
+}
 
-const QuizInfo=({title,slides,topic})=>{
-    const [currSlide,setCurrSlide]=useState(0);
+const QuizInfo=({title,slides,topic,currSlideStuff})=>{
+    const [currSlide,setCurrSlide]=currSlideStuff;
+    
     return(
         <>
-            <div className='solve-slide-link'>
-                <ul className='solve-slide-link-list'>
-                    {
-                        slides.map((slide,ind)=>(
-                        [currSlide-2,currSlide,currSlide,currSlide,currSlide+1].includes(ind)?
-                            (<li 
-                                key={`slide:${ind}`}
-                                className='solve-slide-link-item'
-                            >
-                                {ind+1}
-                            </li>):(null)
-                        ))
-                    }
-
-                </ul>
-            </div>
+            <Pagination 
+                indStuff={currSlideStuff}
+                pages={slides}
+            />
         </>
     )
 }
@@ -33,7 +50,7 @@ const Solve=({quizesStuff})=>{
     // quiz info 
     const [title,setTitle]=useState('');
     const [topic,setTopic]=useState('MATH');
-    const [slides,setSlides]=useState([]);
+    const [solSlides,setSolSlides]=useState([]);
     const slidesRef=useRef([]);
 
     useEffect(()=>{
@@ -42,17 +59,20 @@ const Solve=({quizesStuff})=>{
             slidesRef.current = [...quizRef.current.slides];
             setTitle(quizRef.current.title);
             setTopic(quizRef.current.topic);
-            setSlides(slidesRef.current);
+            setSolSlides(slidesRef.current);
         }
 
     },[quizes])
+
+    const [currSlide,setCurrSlide]=useState(0);
 
     return (
         <header className='solve-header'>
             <QuizInfo
                 title={title}
                 topic={topic}
-                slides={slides}
+                slides={slidesRef.current}
+                currSlideStuff={[currSlide,setCurrSlide]}
             />
         </header>
     )
