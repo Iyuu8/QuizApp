@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import './App.css';
 import './QuizMaker.css';
 import './CreateQuiz.css';
+import './solve.css';
 import App from './App';
 import { BrowserRouter as Router, Routes , Route } from 'react-router-dom';
 

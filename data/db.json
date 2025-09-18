@@ -69,6 +69,49 @@
               "correct": true
             }
           ]
+        },
+        {
+          "question": "good morning",
+          "choices": [
+            {
+              "choice": "correct ",
+              "correct": true
+            },
+            {
+              "choice": "bell",
+              "correct": false
+            },
+            {
+              "choice": "wrong",
+              "correct": false
+            }
+          ]
+        },
+        {
+          "question": "i am a peice",
+          "choices": [
+            {
+              "choice": "yes",
+              "correct": false
+            },
+            {
+              "choice": "no",
+              "correct": true
+            }
+          ]
+        },
+        {
+          "question": "yes brother spit your shit",
+          "choices": [
+            {
+              "choice": "yes",
+              "correct": true
+            },
+            {
+              "choice": "no",
+              "correct": false
+            }
+          ]
         }
       ],
       "topic": "HISTORY",

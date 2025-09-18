@@ -1,5 +1,6 @@
 import{useState,useEffect,useRef} from 'react';
 import { useParams } from 'react-router-dom';
+
 const Pagination=({indStuff,pages})=>{
   const [currInd,setCurrInd] = indStuff;
   let start = Math.max(0,currInd-2);
@@ -12,17 +13,23 @@ const Pagination=({indStuff,pages})=>{
     <div className='pagination'>
       {pages.slice(start,end).map((page,ind)=>{
         const actualInd = start+ind;
+        const bkg = actualInd===currInd? "var(--pagination-bkg-primary)":"var(--pagination-bkg-inherit)";
         return(
           <button 
-            key={page}
+            style={{backgroundColor:bkg}}
+            key={page.question}
             onClick={()=> setCurrInd(actualInd)}
+            className='center'
           >{actualInd+1}</button>
         )
       })}
-      {end< pages.length -1&&
+      {end<= pages.length -1&&
         <>
-          <button>...</button>
-          <button onClick={()=>setCurrInd(pages.length-1)}>last</button>
+          <button className='pagination-dots'>...</button>
+          <button 
+            onClick={()=>setCurrInd(pages.length-1)}
+            style={{backgroundColor:"var(--pagination-bkg-inherit)"}}
+          >last</button>
         </>
       }
     </div>
@@ -38,6 +45,12 @@ const QuizInfo=({title,slides,topic,currSlideStuff})=>{
                 indStuff={currSlideStuff}
                 pages={slides}
             />
+            <div className='solve-quiz-info'>
+                <h2 className='solve-quiz-info-NbQuestions'>Questions: {slides.length}</h2>
+                <h2 className='solve-quiz-info-topic center'>{topic}</h2>
+                <h2 className='solve-quiz-info-title'>"{title}"</h2>
+
+            </div>
         </>
     )
 }
