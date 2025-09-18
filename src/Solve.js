@@ -1,12 +1,17 @@
-import{useState,useEffect,useRef} from 'react';
+import{useState,useEffect,useRef, createContext, useContext} from 'react';
 import { useParams } from 'react-router-dom';
 
-const Pagination=({indStuff,pages})=>{
-  const [currInd,setCurrInd] = indStuff;
-  let start = Math.max(0,currInd-2);
-  let end = Math.min(currInd+3,pages.length);
-  const r=2-currInd;
-  const c=currInd+3-end;
+const SolveContext=createContext();
+
+const Pagination=()=>{
+  const {isMobile,currSlideStuff,slidesRef}=useContext(SolveContext);
+  const pages = slidesRef.current;
+  const [currInd,setCurrInd] = currSlideStuff;
+
+  let start = Math.max(0,isMobile? currInd-1:currInd-2);
+  let end = Math.min(isMobile? currInd+2:currInd+3,pages.length);
+  const r=isMobile? 1-currInd:2-currInd;
+  const c=isMobile? currInd+2-end:currInd+2-end+3;
   if(r>0) end = Math.min(pages.length,end+r);
   if(c>0) start = Math.max(0,start-c);
   return (
@@ -23,7 +28,7 @@ const Pagination=({indStuff,pages})=>{
           >{actualInd+1}</button>
         )
       })}
-      {end<= pages.length -1&&
+      {end<= pages.length -1&&!isMobile&&
         <>
           <button className='pagination-dots'>...</button>
           <button 
@@ -36,19 +41,19 @@ const Pagination=({indStuff,pages})=>{
   )
 }
 
-const QuizInfo=({title,slides,topic,currSlideStuff})=>{
-    const [currSlide,setCurrSlide]=currSlideStuff;
+const QuizInfo=()=>{
+    const {title,slidesRef,topic,currSlideStuff}=useContext(SolveContext);
     
     return(
         <>
             <Pagination 
                 indStuff={currSlideStuff}
-                pages={slides}
+                pages={slidesRef.current}
             />
             <div className='solve-quiz-info'>
-                <h2 className='solve-quiz-info-NbQuestions'>Questions: {slides.length}</h2>
+                <h2 className='solve-quiz-info-NbQuestions center'>Questions: {slidesRef.current.length}</h2>
                 <h2 className='solve-quiz-info-topic center'>{topic}</h2>
-                <h2 className='solve-quiz-info-title'>"{title}"</h2>
+                <h2 className='solve-quiz-info-title center'>{title}</h2>
 
             </div>
         </>
@@ -66,6 +71,15 @@ const Solve=({quizesStuff})=>{
     const [solSlides,setSolSlides]=useState([]);
     const slidesRef=useRef([]);
 
+    // to adjust based on screen size
+    const [isMobile,setIsMobile]=useState(false);
+    useEffect(()=>{
+      const handleResize=()=>setIsMobile(window.innerWidth<=715);
+      window.addEventListener("resize",handleResize);
+      handleResize();
+      return ()=> window.removeEventListener("resize",handleResize);
+    },[])
+
     useEffect(()=>{
         quizRef.current = quizes.find(quiz=> quiz.quizPath===id.slice(id.indexOf(":")+1));
         if(quizRef.current){
@@ -80,14 +94,18 @@ const Solve=({quizesStuff})=>{
     const [currSlide,setCurrSlide]=useState(0);
 
     return (
+        <SolveContext.Provider 
+          value={{isMobile,title,topic,slidesRef,currSlideStuff:[currSlide,setCurrSlide]}}
+        >
         <header className='solve-header'>
             <QuizInfo
-                title={title}
+                /* title={title}
                 topic={topic}
                 slides={slidesRef.current}
-                currSlideStuff={[currSlide,setCurrSlide]}
+                currSlideStuff={[currSlide,setCurrSlide]} */
             />
         </header>
+        </SolveContext.Provider>
     )
 }
 

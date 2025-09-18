@@ -122,7 +122,7 @@ const QuizControls=({topicStuff,titleStuff,quizTopicStuff,screenSize,modalStuff,
                     placeholder='Quiz Title'
                     className='cq-title'
                     value={title}
-                    onChange={(e)=>setTitle(e.target.value)}
+                    onChange={(e)=>setTitle(e.target.value.length<=15? e.target.value:e.target.value.slice(0,e.target.value.length-1))}
                     required
                 />)
                 :(
@@ -498,7 +498,7 @@ export const TitleModal=({titleStuff,modalStuff,link})=>{
                     placeholder='Quiz Title'
                     className='cq-title cq-title-mobile'
                     value={title}
-                    onChange={(e)=>setTitle(e.target.value)}
+                    onChange={(e)=>setTitle(e.target.value.length<=15? e.target.value:e.target.value.slice(0,e.target.value.length-1))}
                     required
                 />
                 <button className='cq-submit-title'>Confirm</button>

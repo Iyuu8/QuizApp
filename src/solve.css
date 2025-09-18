@@ -12,6 +12,7 @@
     padding: 0 1rem;
     justify-content: space-between;
     border: var(--qm-header-border);
+    gap: 0.3rem;
 }
 .pagination{
     display: flex;
@@ -20,7 +21,7 @@
 }
 .pagination button{
     aspect-ratio: 1/1;
-    padding: 0 0.5rem;
+    padding: 0 0.2rem;
     border: none;
     color: aliceblue;
     font-family: "Pixelify Sans", sans-serif;
@@ -44,12 +45,31 @@
     align-items: center;
     font-size: 1.8ch;
 }
-.solve-quiz-info-NbQuestions{color: var(--pagination-bkg-inherit);}
-.solve-quiz-info-title{color: var(--quiz-maker);}
+.solve-quiz-info-NbQuestions{color: var(--pagination-bkg-inherit);text-align: center;}
+.solve-quiz-info-title{color: var(--quiz-maker); text-align: center;}
 .solve-quiz-info-topic{
     height: 100%;
     border-radius: 4px;
     color: var(--text-color);
     background-color: var(--player);
     padding:0 0.5rem;
+}
+
+@media screen and (max-width:770px) {.solve-quiz-info{font-size: 1.5ch;}}
+@media screen and (max-width:520px) {
+    .solve-header{padding: 0 0.5rem}
+    .solve-quiz-info{font-size: 1.35ch;}
+}
+@media screen and (max-width:470px) {
+    .solve-header{padding: 0 0.1rem}
+    .solve-quiz-info{font-size: 1.2ch;}
+}
+@media screen and (max-width:420px) {
+    .solve-quiz-info{
+        font-size: 1.1ch;
+        gap: 0.2rem;
+    }
+}
+@media screen and (max-width:320px) {
+    .solve-quiz-info{font-size: 1ch;}
 }

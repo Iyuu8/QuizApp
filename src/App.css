@@ -24,12 +24,11 @@
 }
 body,#root,.App{
   min-height: 100vh;
-  overflow: hidden;
 }
 .App{
   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
   width: 100vw;
-  height: 100dvh;
+  height: 100vh;
   overflow: hidden;
 }
 .role-choice{
@@ -347,5 +346,4 @@ ul{
 }
 button, a, div {
   -webkit-tap-highlight-color: transparent; /* iOS/Android */
-  -webkit-touch-callout: none; /* Prevents long-press menu on iOS */
 }
