@@ -1,11 +1,15 @@
 import{useState,useEffect,useRef, createContext, useContext} from 'react';
 import { useParams } from 'react-router-dom';
+import {motion,AnimatePresence} from 'framer-motion';
+import { FaCheck, FaCaretLeft, FaCaretRight, FaTrash } from 'react-icons/fa';
+import { FaXmark } from 'react-icons/fa6';
 
 const SolveContext=createContext();
 
 const Pagination=()=>{
-  const {isMobile,currSlideStuff,slidesRef}=useContext(SolveContext);
-  const pages = slidesRef.current;
+  const {isMobile,currSlideStuff,slidesStuff}=useContext(SolveContext);
+  const [slides,setSlides]=slidesStuff;
+  const pages = slides;
   const [currInd,setCurrInd] = currSlideStuff;
 
   let start = Math.max(0,isMobile? currInd-1:currInd-2);
@@ -42,22 +46,116 @@ const Pagination=()=>{
 }
 
 const QuizInfo=()=>{
-    const {title,slidesRef,topic,currSlideStuff}=useContext(SolveContext);
+    const {title,slidesStuff,topic,currSlideStuff}=useContext(SolveContext);
+    const [slides,setSlides]=slidesStuff;
     
     return(
         <>
-            <Pagination 
-                indStuff={currSlideStuff}
-                pages={slidesRef.current}
-            />
+            <Pagination />
             <div className='solve-quiz-info'>
-                <h2 className='solve-quiz-info-NbQuestions center'>Questions: {slidesRef.current.length}</h2>
+                <h2 className='solve-quiz-info-NbQuestions center'>Questions: {slides.length}</h2>
                 <h2 className='solve-quiz-info-topic center'>{topic}</h2>
                 <h2 className='solve-quiz-info-title center'>{title}</h2>
 
             </div>
         </>
     )
+}
+
+const SolveSlider=({slidesStuff})=>{
+  const {solSlidesStuff,currSlideStuff}=useContext(SolveContext);
+  const [solSlides,setSolSlides]=solSlidesStuff;
+  const [currSlide,setCurrSlide]=currSlideStuff;
+  const [slides,setSlides]=slidesStuff;
+
+  const handleFinishQuiz=()=>{
+    return;
+  }
+
+  
+
+  const SolveSlide=()=>{
+    const handleChoice=(currSlide,ind)=>{
+      setSolSlides(solSlides.map((slide,j)=>(
+        currSlide===j?
+          {...slide,choices:slide.choices.map((item,i)=>(
+            ind===i? {...item,correct:true}:{...item,correct:false}
+          ))
+        }:slide
+      )))
+    }
+    return(
+    <motion.div 
+      className='cq-nq-slide center solve-slide'
+      initial={false}
+      animate={{opacity:1}}
+      exit={{opacity:0}}
+      transition={{duration:0.3}}
+
+    >
+      
+      <div className='cq-nq-slide-question'>
+        <div className='cq-nq-slide-question-input-container center'>
+          <h2 className="cq-nq-slide-ind center">{currSlide+1}</h2>
+          <h2 className='cq-nq-slide-question-input'> 
+            {solSlides[currSlide] && solSlides[currSlide].question}
+          </h2>
+        </div>
+        <div className='cq-nq-slide-choices-container'>
+          {solSlides[currSlide] && 
+            <ul 
+              className='cq-nq-slide-choices-list' 
+              style={{'--nb-items':solSlides[currSlide].choices.length}}
+            >
+              {solSlides[currSlide].choices.map((item,ind)=>(
+                  <li className='cq-nq-choice center' key={`choiceNb${ind}`}>
+                    <h2 className='cq-nq-choice-input solve-choice'
+                    > {item.choice}</h2>
+                    <button 
+                      className='cq-nq-value-choice center'
+                      onClick={()=>handleChoice(currSlide,ind)}
+                    >
+                      {item.correct? <FaCheck/>:<FaXmark/>}
+                    </button>
+                        
+                  </li>
+              ))}
+            </ul>
+          }
+        </div>
+      </div>
+      {currSlide===solSlides.length-1 &&
+        <div className='cq-nq-save-delete-container center'>
+          <button 
+            className='cq-nq-finish-quiz'
+            onClick={()=>handleFinishQuiz()}
+          >
+            Finish Quiz
+          </button>
+        </div>
+    }
+</motion.div>
+    )
+  }
+  return(
+    <div className='cq-qs-container'>
+      <button 
+        className='cq-qs-next-slide center'
+        onClick={()=>setCurrSlide(currSlide<slides.length-1?currSlide+1:currSlide)}
+      ><FaCaretRight/></button>
+
+      <button 
+        className='cq-qs-prev-slide center'
+        onClick={()=>setCurrSlide( currSlide>0? currSlide-1:currSlide)}
+      ><FaCaretLeft/></button>
+
+      <AnimatePresence mode='wait' initial={false}>         
+        <SolveSlide key={`quizSlide${currSlide}`}/>
+      </AnimatePresence>
+    
+                
+    </div>
+  )
 }
 
 const Solve=({quizesStuff})=>{
@@ -69,7 +167,8 @@ const Solve=({quizesStuff})=>{
     const [title,setTitle]=useState('');
     const [topic,setTopic]=useState('MATH');
     const [solSlides,setSolSlides]=useState([]);
-    const slidesRef=useRef([]);
+    const [slides,setSlides]=useState([]);
+    const [currSlide,setCurrSlide]=useState(0);
 
     // to adjust based on screen size
     const [isMobile,setIsMobile]=useState(false);
@@ -83,28 +182,38 @@ const Solve=({quizesStuff})=>{
     useEffect(()=>{
         quizRef.current = quizes.find(quiz=> quiz.quizPath===id.slice(id.indexOf(":")+1));
         if(quizRef.current){
-            slidesRef.current = [...quizRef.current.slides];
-            setTitle(quizRef.current.title);
-            setTopic(quizRef.current.topic);
-            setSolSlides(slidesRef.current);
+          setSlides([...quizRef.current.slides]);
+          setTitle(quizRef.current.title);
+          setTopic(quizRef.current.topic);
+          setSolSlides(quizRef.current.slides.map((item)=>(
+            {...item,choices:item.choices.map((choice)=>(
+              {...choice,correct:false}
+            ))}
+          )));
+          setCurrSlide(0);
         }
 
     },[quizes])
 
-    const [currSlide,setCurrSlide]=useState(0);
+
+      console.log(solSlides);
 
     return (
         <SolveContext.Provider 
-          value={{isMobile,title,topic,slidesRef,currSlideStuff:[currSlide,setCurrSlide]}}
+          value={{
+            isMobile,title,topic,
+            slidesStuff:[slides,setSlides],
+            currSlideStuff:[currSlide,setCurrSlide],
+            solSlidesStuff:[solSlides,setSolSlides]
+          }}
         >
         <header className='solve-header'>
-            <QuizInfo
-                /* title={title}
-                topic={topic}
-                slides={slidesRef.current}
-                currSlideStuff={[currSlide,setCurrSlide]} */
-            />
+            <QuizInfo/>
         </header>
+        <main className='cq-main center'>
+          <SolveSlider slidesStuff={[slides,setSlides]}/>
+
+        </main>
         </SolveContext.Provider>
     )
 }

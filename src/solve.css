@@ -45,6 +45,12 @@
     align-items: center;
     font-size: 1.8ch;
 }
+.solve-slide{padding-bottom: 2rem;}
+.solve-choice{
+    display: flex;
+    align-items: center;
+    justify-content: start;
+}
 .solve-quiz-info-NbQuestions{color: var(--pagination-bkg-inherit);text-align: center;}
 .solve-quiz-info-title{color: var(--quiz-maker); text-align: center;}
 .solve-quiz-info-topic{
