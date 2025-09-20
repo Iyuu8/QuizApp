@@ -1,10 +1,43 @@
 import{useState,useEffect,useRef, createContext, useContext} from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import {motion,AnimatePresence} from 'framer-motion';
 import { FaCheck, FaCaretLeft, FaCaretRight, FaTrash } from 'react-icons/fa';
 import { FaXmark } from 'react-icons/fa6';
 
 const SolveContext=createContext();
+
+const ScoreModal=({score,nbQuestions,scoreModalStuff,blurStuff})=>{
+  const [openScore,setOpenScore]=scoreModalStuff;
+  const [isBlur,setIsblur]=blurStuff;
+  const navigate=useNavigate();
+  const ConfirmOp=()=>{
+    setOpenScore(false);
+    setIsblur(false);
+    navigate('/Player')
+  }
+  return(
+    <motion.div 
+      className='solve-score-modal'
+      initial={{top:'-100%'}}
+      animate={{top:'45%'}}
+      exit={{top:'-100%'}}
+      transition={{type:'spring'}}
+    >
+      <div className='solve-results center'>
+        <h2> Your Score is: </h2>
+        <h2>{score}/{nbQuestions}</h2>
+
+      </div>
+      <button 
+        className='solve-score-confrim'
+        onClick={ConfirmOp}
+      >
+        Confirm
+      </button>
+
+    </motion.div>
+  )
+}
 
 const Pagination=()=>{
   const {isMobile,currSlideStuff,slidesStuff}=useContext(SolveContext);
@@ -62,17 +95,31 @@ const QuizInfo=()=>{
     )
 }
 
-const SolveSlider=({slidesStuff})=>{
-  const {solSlidesStuff,currSlideStuff}=useContext(SolveContext);
+const SolveSlider=()=>{
+  const {solSlidesStuff,currSlideStuff,scoreStuff,slidesStuff,scoreModalStuff,blurStuff}=useContext(SolveContext);
   const [solSlides,setSolSlides]=solSlidesStuff;
   const [currSlide,setCurrSlide]=currSlideStuff;
   const [slides,setSlides]=slidesStuff;
+  const [score,setScore]=scoreStuff;
+  const [openScore,setOpenScore]=scoreModalStuff;
+  const [isBlur,setIsblur]=blurStuff;
 
   const handleFinishQuiz=()=>{
-    return;
+    let c=0;
+    for(let i=0; i<slides.length;i++){
+      const choices=slides[i].choices;
+      console.log(choices);
+      const solChoices=solSlides[i].choices;
+      for(let i=0; i<choices.length; i++){
+        if(choices[i].correct) {
+          c=(choices[i].choice === solChoices[i].choice && solChoices[i].correct)? c+1:c;
+        }
+      }      
+    }
+    setScore(c);
+    setIsblur(true);
+    setOpenScore(true);
   }
-
-  
 
   const SolveSlide=()=>{
     const handleChoice=(currSlide,ind)=>{
@@ -158,64 +205,82 @@ const SolveSlider=({slidesStuff})=>{
   )
 }
 
-const Solve=({quizesStuff})=>{
-    const {id} = useParams();
-    const [quizes,setQuizes] = quizesStuff;
-    const quizRef = useRef();
+const Solve=({quizesStuff,blurStuff})=>{
+  const {id} = useParams();
+  const [quizes,setQuizes]=quizesStuff;
+  const [isBlur,setIsblur]=blurStuff;
+  const quizRef = useRef();
 
-    // quiz info 
-    const [title,setTitle]=useState('');
-    const [topic,setTopic]=useState('MATH');
-    const [solSlides,setSolSlides]=useState([]);
-    const [slides,setSlides]=useState([]);
-    const [currSlide,setCurrSlide]=useState(0);
+  // quiz info 
+  const [title,setTitle]=useState('');
+  const [topic,setTopic]=useState('MATH');
+  const [solSlides,setSolSlides]=useState([]);
+  const [slides,setSlides]=useState([]);
+  const [currSlide,setCurrSlide]=useState(0);
 
-    // to adjust based on screen size
-    const [isMobile,setIsMobile]=useState(false);
-    useEffect(()=>{
-      const handleResize=()=>setIsMobile(window.innerWidth<=715);
-      window.addEventListener("resize",handleResize);
-      handleResize();
-      return ()=> window.removeEventListener("resize",handleResize);
-    },[])
+  // to adjust based on screen size
+  const [isMobile,setIsMobile]=useState(false);
+  useEffect(()=>{
+    const handleResize=()=>setIsMobile(window.innerWidth<=715);
+    window.addEventListener("resize",handleResize);
+    handleResize();
+    return ()=> window.removeEventListener("resize",handleResize);
+  },[])
 
-    useEffect(()=>{
-        quizRef.current = quizes.find(quiz=> quiz.quizPath===id.slice(id.indexOf(":")+1));
-        if(quizRef.current){
-          setSlides([...quizRef.current.slides]);
-          setTitle(quizRef.current.title);
-          setTopic(quizRef.current.topic);
-          setSolSlides(quizRef.current.slides.map((item)=>(
-            {...item,choices:item.choices.map((choice)=>(
-              {...choice,correct:false}
-            ))}
-          )));
-          setCurrSlide(0);
-        }
+  // to manage the state of the score modal
+  const [openScore,setOpenScore]=useState(false);
+  const [score,setScore]=useState(0);
 
-    },[quizes])
+  useEffect(()=>{
+    quizRef.current = quizes.find(quiz=> quiz.quizPath===id.slice(id.indexOf(":")+1));
+    if(quizRef.current){
+      setSlides([...quizRef.current.slides]);
+      setTitle(quizRef.current.title);
+      setTopic(quizRef.current.topic);
+      setSolSlides(quizRef.current.slides.map((item)=>(
+        {...item,choices:item.choices.map((choice)=>(
+          {...choice,correct:false}
+        ))}
+      )));
+      setCurrSlide(0);
+    }
+
+  },[quizes])
 
 
-      console.log(solSlides);
+    console.log(solSlides);
 
-    return (
-        <SolveContext.Provider 
-          value={{
-            isMobile,title,topic,
-            slidesStuff:[slides,setSlides],
-            currSlideStuff:[currSlide,setCurrSlide],
-            solSlidesStuff:[solSlides,setSolSlides]
-          }}
-        >
-        <header className='solve-header'>
-            <QuizInfo/>
-        </header>
-        <main className='cq-main center'>
-          <SolveSlider slidesStuff={[slides,setSlides]}/>
+  return (
+    <SolveContext.Provider 
+      value={{
+        isMobile,title,topic,
+        slidesStuff:[slides,setSlides],
+        currSlideStuff:[currSlide,setCurrSlide],
+        solSlidesStuff:[solSlides,setSolSlides],
+        scoreStuff:[score,setScore],
+        scoreModalStuff:[openScore,setOpenScore],
+        blurStuff:[isBlur,setIsblur]
+      }}
+    >
+    <header className='solve-header'>
+        <QuizInfo/>
+    </header>
+    <main className='cq-main center solve-main'>
+      <SolveSlider slidesStuff={[slides,setSlides]}/>
+      <AnimatePresence mode='wait'>
+      {openScore &&
+        <ScoreModal
+          score={score}
+          nbQuestions={slides.length}
+          scoreModalStuff={[openScore,setOpenScore]}
+          blurStuff={[isBlur,setIsblur]}
+        />
+      }
+      </AnimatePresence>
 
-        </main>
-        </SolveContext.Provider>
-    )
+    </main>
+    </SolveContext.Provider>
+  )
 }
 
 export default Solve;

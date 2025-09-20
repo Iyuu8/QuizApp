@@ -73,7 +73,7 @@ const PlayerPage=({modeStuff})=>{
   )
 }
 
-const SolvePage=({quizesStuff})=>{
+const SolvePage=({quizesStuff,blurStuff})=>{
   return(
     <motion.div
       initial={{opacity:0}}
@@ -82,7 +82,7 @@ const SolvePage=({quizesStuff})=>{
       transition={{ease:'easeOut'}}
       className="solve-page"
     >
-      <Solve quizesStuff={quizesStuff}/>
+      <Solve quizesStuff={quizesStuff} blurStuff={blurStuff}/>
     </motion.div>
   )
 }
@@ -129,7 +129,7 @@ function App() {
       <Routes location={location} key={location.pathname}>
         <Route path="/" element={<HomePage />}/>
         <Route path="player" element={<PlayerPage modeStuff={[mode,setMode]}/>}/>
-        <Route path="/SolveQuiz/:id" element={<SolvePage quizesStuff={[quizes,setQuizes]}/>}/>
+        <Route path="/SolveQuiz/:id" element={<SolvePage quizesStuff={[quizes,setQuizes]} blurStuff={[isBlur,setIsblur]}/>}/>
         <Route path="/QuizMaker" element={<QuizMakerPage blurStuff={[isBlur,setIsblur]} modeStuff={[mode,setMode]}/>}/>
         <Route path="/CreateQuiz/:id" element={<CreateQuizPage blurStuff={[isBlur,setIsblur]} quizesStuff={[quizes,setQuizes]} modeStuff={[mode,setMode]}/>}/>
         <Route path="/FetchError" element={<FetchError/>}/>
